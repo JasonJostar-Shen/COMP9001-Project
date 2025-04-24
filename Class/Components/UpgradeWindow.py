@@ -1,5 +1,7 @@
 import pygame
 from Utils.Setting import WIDTH,HEIGHT
+from Class.Components.Button import Button
+import Utils.GameUtils as GU
 
 class UpgradeWindow:
     def __init__(self,screen,options):
@@ -11,22 +13,23 @@ class UpgradeWindow:
         self.overlay.set_alpha(180)
         self.titleFont = pygame.font.SysFont('arial',48)
         self.optionFont = pygame.font.SysFont('arial',20)
-        self.boxs = []
+        self.buttons = list[Button]
         self.options = options
+        self.optionColors = [(144, 238, 144),(135, 206, 250),(160, 32, 240)]
         self.initOpitons()
     
     
     def initOpitons(self):
-        boxWidth = 180
-        boxHeight = 100
-        interval = 30
+        boxWidth, boxHeight, interval = 180, 100, 30
         width,height = self.screen.get_size()
         initX = (width - boxWidth * len(self.options) - interval * 2)//2
         y = height // 2
-        self.boxs = []
-        for i in range(len(self.options)):
-            rect = pygame.Rect(initX + i * (boxWidth + interval),y,boxWidth,boxHeight)
-            self.boxs.append(rect)
+        self.buttons = []
+        for i, option in enumerate(self.options):
+            x = initX + i * (boxWidth + interval)
+            text = GU.GetOptionText(option)
+            btn = Button(x,y,boxWidth,boxHeight,text,self.optionFont,colorBorder=self.optionColors[option[2]])
+            self.buttons.append(btn)
             
     def draw(self):
         self.screen.blit(self.bg,(0,0))
@@ -36,19 +39,22 @@ class UpgradeWindow:
         self.screen.blit(title,titleRect)
         
         mousePos = pygame.mouse.get_pos()
-        for i,rect in enumerate(self.boxs):
-            hover = rect.collidepoint(mousePos)
-            color = (200, 200, 200) if hover else (255, 255, 255)
-            pygame.draw.rect(self.screen, color, rect, border_radius=12)
-            box = self.optionFont.render(self.options[i], True, (0, 0, 0))
-            boxRect = box.get_rect(center=rect.center)
-            self.screen.blit(box,boxRect)
+        mousePressed = pygame.mouse.get_pressed()[0]
+        for btn in self.buttons:
+            btn.update(mousePos,mousePressed)
+            btn.draw(self.screen)
+        # for i,rect in enumerate(self.buttons):
+        #     hover = rect.collidepoint(mousePos)
+        #     color = (200, 200, 200) if hover else (255, 255, 255)
+        #     pygame.draw.rect(self.screen, color, rect, border_radius=12)
+        #     box = self.optionFont.render(self.options[i], True, (0, 0, 0))
+        #     boxRect = box.get_rect(center=rect.center)
+        #     self.screen.blit(box,boxRect)
         pygame.display.flip()
         
     def handleEvent(self,event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for i, rect in enumerate(self.boxs):
-                if rect.collidepoint(event.pos):
-                    self.selected = i
-                    return i
+        for i, btn in enumerate(self.buttons):
+            if btn.isClicked(event):
+                self.selected = i
+                return i
         return None

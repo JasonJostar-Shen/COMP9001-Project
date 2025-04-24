@@ -1,17 +1,18 @@
 import pygame
 from Class.Objects.Player import Player
 from Class.Objects.Enemy import Enemy
+from Class.Objects.Effect import Effect
 from Class.Components.Wall import Wall
 from Class.Components.StatusBar import StatusBar
 from Class.Components.UpgradeWindow import UpgradeWindow
-import Utils.GameUtils as GF
+import Utils.GameUtils as GU
 import Utils.Setting as config
-from Utils.Setting import WIDTH,HEIGHT,FPS,BG_URL,STATUSWIDTH
+
 
 
 def initWindow():
-    bg = pygame.image.load(BG_URL).convert()
-    bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+    bg = pygame.image.load(config.BG_URL).convert()
+    bg = pygame.transform.scale(bg, (config.WIDTH, config.HEIGHT))
     return bg
 
 def initSprites():
@@ -19,20 +20,24 @@ def initSprites():
     sprites = pygame.sprite.LayeredUpdates()
     enemySprites = pygame.sprite.LayeredUpdates()
     bulletsSprites = pygame.sprite.LayeredUpdates()
+    effectSprites = pygame.sprite.LayeredUpdates()
     wall = Wall()
     # sprites.add(player,layer = 2)
     sprites.add(wall,layer = 1)
     statusBar = StatusBar(player)
-    return player,wall,sprites,enemySprites,bulletsSprites,statusBar
+    return player,wall,sprites,enemySprites,bulletsSprites,effectSprites,statusBar
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player):
-    hp = GF.calEnemyHP(player.kills)
-    speed = GF.calEnemySpeed(player.kills)
+    hp = GU.CalEnemyHP(player.kills)
+    speed = GU.CalEnemySpeed(player.kills)
     enemy = Enemy(hp,speed)
     # print(hp,speed)
     sprites.add(enemy,layer = 0)
+    
+def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,url=None):
+    group.add(Effect(type,pos,url))
 
-def collsionEvent(player:Player,wall,enemies,bullets):
+def collsionEvent(player:Player,wall,enemies,bullets,effects):
     EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
     if EnenmyHitWall:
         for enemy in EnenmyHitWall:
@@ -47,12 +52,13 @@ def collsionEvent(player:Player,wall,enemies,bullets):
             enemy.takenDamage(player.atk)
             if enemy.isDead():
                 player.gainExp(enemy.exp)
+                generateEffect(effects,'FadeOut',enemy.rect.center,config.ENEMY_IMG_URL)
                 enemy.kill()
                 
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH + STATUSWIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT))
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
@@ -60,7 +66,7 @@ class Game:
         self.restart()
 
     def restart(self):
-        self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.statusBar = initSprites()
+        self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = initSprites()
         self.isPause = False
         self.upgradeWin = None
         self.startTime = pygame.time.get_ticks()
@@ -70,7 +76,7 @@ class Game:
 
     def run(self):
         while not self.isEnd:
-            self.clock.tick(FPS)
+            self.clock.tick(config.FPS)
             curTime = pygame.time.get_ticks()
 
             for event in pygame.event.get():
@@ -89,21 +95,15 @@ class Game:
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
                     if result is not None:
+                        self.player.lvUp(self.options[result])
                         self.upgradeWin = None
                         self.isPause = False
-                        if result == 0:
-                            self.player.attackSpeed *= 1 - (config.PLAYER_UPGRADE_AS / 100)
-                        elif result == 1:
-                            self.player.range += config.PLAYER_UPGRADE_RANG
-                        elif result == 2:
-                            self.player.atk += config.PLAYER_UPGRADE_DAMAGE
 
-            if self.player.isUpgrade():
+            if self.player.isUpgrade() and self.upgradeWin == None:
                 self.isPause = True
                 self.pauseTime = curTime
-                self.player.lvUp()
-                options = [f'AS +{config.PLAYER_UPGRADE_AS}%', f'Range +{config.PLAYER_UPGRADE_RANG}', f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
-                self.upgradeWin = UpgradeWindow(self.screen, options)
+                self.options = GU.GenerateUpgradeOption(3)
+                self.upgradeWin = UpgradeWindow(self.screen, self.options)
 
             if self.isPause:
                 if self.upgradeWin is not None:
@@ -117,28 +117,29 @@ class Game:
                 self.pauseTime = None
 
             curEnemy = len(self.enemySprites)
-            enemyMax = GF.calEnemyMax(self.player.kills)
-            enemyCD = GF.calEnemyCD(self.player.kills)
+            enemyMax = GU.CalEnemyMax(self.player.kills)
+            enemyCD = GU.CalEnemyCD(self.player.kills)
 
             if curEnemy < enemyMax and (curTime - self.enemyRespondTime) >= enemyCD:
                 generateEnemy(self.enemySprites,self.player)
                 self.enemyRespondTime = curTime
 
-            if curTime - self.playerFireTime >= self.player.attackSpeed:
+            if curTime - self.playerFireTime >= self.player.atkSpeed:
                 self.playerFireTime = curTime
                 self.player.shoot(self.bulletSprites)
 
-            collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites)
+            collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
             self.player.findTarget(self.enemySprites)
-
             self.bulletSprites.update()
             self.enemySprites.update()
+            self.effectSprites.update()
 
             self.screen.blit(self.bg, (0, 0))
             self.player.aimTarget(self.screen)
             self.sprites.draw(self.screen)
             self.bulletSprites.draw(self.screen)
             self.enemySprites.draw(self.screen)
+            self.effectSprites.draw(self.screen)
             self.player.draw(self.screen)
             self.statusBar.update(self.screen)
 

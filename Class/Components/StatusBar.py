@@ -29,7 +29,7 @@ class StatusBar:
         texts.append(self.front.render(f"LV: {self.player.lv}",True,(0,0,0)))
         texts.append(self.front.render(f"HP: {self.player.hp}",True,(0,0,0)))
         texts.append(self.front.render(f"Exp: {self.player.exp}/{self.player.getLvGap()}",True,(0,0,0)))
-        texts.append(self.front.render(f"AS: {self.player.attackSpeed/1000.0:.1f}s",True,(0,0,0)))
+        texts.append(self.front.render(f"AS: {self.player.atkSpeed/1000.0:.1f}s",True,(0,0,0)))
         texts.append(self.front.render(f"ATK: {self.player.atk}",True,(0,0,0)))
         texts.append(self.front.render(f"Ramge: {self.player.range}",True,(0,0,0)))
         texts.append(self.front.render(f"Kills: {self.player.kills}",True,(0,0,0)))

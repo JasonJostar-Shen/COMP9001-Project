@@ -1,21 +1,42 @@
 import Utils.Setting as config
-import math
-def calLVGap(curLV):
+import random
+
+def CalLVGap(curLV):
     return curLV * config.PLAYER_LV_GAP
 
-def calEnemyExp(initHP):
+def CalEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
 
-def calEnemyHP(curKills):
+def CalEnemyHP(curKills):
     return config.ENEMY_INITHP + curKills // 5 * 10
 
-def calEnemySpeed(curKills):
+def CalEnemySpeed(curKills):
     return config.ENEMY_INITSPEED + curKills // 100 * 1
 
-def calEnemyCD(curKills):
+def CalEnemyCD(curKills):
     cd = config.ENEMY_COOLDOWN - curKills//2 * 10
     cd =  cd if cd > config.ENEMY_COOLDOWN_MIN else config.ENEMY_COOLDOWN_MIN
     return cd
     
-def calEnemyMax(curKills):
+def CalEnemyMax(curKills):
     return config.ENEMY_MAX + curKills//10
+
+def GenerateUpgradeOption(num):
+    upgradeDict = config.UPGRADE_DICT
+    options = []
+    for i in range(num):
+        key = random.choice(list(upgradeDict.keys()))
+        valueList = upgradeDict[key]
+        value = random.choices(valueList,weights=config.UPGRADE_WEIGHT,k=1)[0]
+        index = valueList.index(value)
+        options.append((key,value,index))
+    return options
+
+def GetOptionText(option):
+    attribute = option[0]
+    value = option[1]
+    if attribute == 'ATK' or attribute == 'Range':
+        return f'{attribute} +{value}'
+    if attribute == 'AS':
+        return f'{attribute} -{value}%'
+    

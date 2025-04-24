@@ -1,6 +1,6 @@
 import pygame
 import math
-import Utils.GameFormula as GF
+import Utils.GameUtils as GU
 from Class.Objects.Bullet import Bullet
 from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE,PLAYER_BASE_URL,PLAYER_TURRET_URL
 
@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.angle = 0
         self.range = 500
         self.atk = PLAYER_DAMAGE
-        self.attackSpeed = PLAYER_AS
+        self.atkSpeed = PLAYER_AS
         self.kills = 0
         self.lv = 1
         super().__init__()
@@ -44,9 +44,16 @@ class Player(pygame.sprite.Sprite):
         screen.blit(turret,turretRect)
         
 
-    def aimTarget(self,screen):
+    def aimTarget(self, screen):
         if self.target:
-            pygame.draw.line(screen, (255, 0, 0), self.rect.center, self.target.rect.center, 2)
+            # 创建一个透明 Surface
+            surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+
+            # 在上面画线（带 RGBA 色值）
+            pygame.draw.line(surface, (255, 0, 0, 128), self.rect.center, self.target.rect.center, 2)
+
+            # 再把它 blit 到屏幕上
+            screen.blit(surface, (0, 0))
     
 
     def gainExp(self,exp):
@@ -55,11 +62,19 @@ class Player(pygame.sprite.Sprite):
         print(f"Player gained Exp!: {self.exp}")
             
     def isUpgrade(self):
-        return self.exp >= GF.calLVGap(self.lv)
+        return self.exp >= GU.CalLVGap(self.lv)
 
-    def lvUp(self):
-        self.exp -= GF.calLVGap(self.lv)
+    def lvUp(self,option):
+        self.exp -= GU.CalLVGap(self.lv)
         self.lv += 1
+        attribute = option[0]
+        value = option[1]
+        if attribute == 'AS':
+            self.atkSpeed *= value/100.0
+        elif attribute == 'ATK':
+            self.atk += value
+        elif attribute == 'Range':
+            self.range += value
         
     
     def findTarget(self,group):
@@ -111,4 +126,5 @@ class Player(pygame.sprite.Sprite):
         return self.target != None
     
     def getLvGap(self):
-        return GF.calLVGap(self.lv)
+        return GU.CalLVGap(self.lv)
+    
