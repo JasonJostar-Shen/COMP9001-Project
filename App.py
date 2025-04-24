@@ -4,6 +4,7 @@ from Class.Objects.Enemy import Enemy
 from Class.Components.Wall import Wall
 from Class.Components.StatusBar import StatusBar
 from Class.Components.UpgradeWindow import UpgradeWindow
+import Utils.GameFormula as GF
 import Utils.Setting as config
 from Utils.Setting import WIDTH,HEIGHT,ENEMY_MAX,ENEMY_COOLDOWN,FPS,BG_URL,STATUSWIDTH
 
@@ -24,7 +25,7 @@ def initSprites():
     return player,wall,sprites,enemySprites,bulletsSprites,statusBar
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates):
-    enemy = Enemy()
+    enemy = Enemy(GF.calEnemyHP(player.lv))
     sprites.add(enemy,layer = 0)
 
 def collsionEvent(player:Player,wall,enemies,bullets):
@@ -84,7 +85,7 @@ if __name__ == '__main__':
                     if result == 0:
                         player.attackSpeed *= 1 - (config.PLAYER_UPGRADE_AS / 100)
                     elif result == 1:
-                        player.hp += config.PLAYER_UPGRADE_HP
+                        player.range += config.PLAYER_UPGRADE_RANG
                     elif result == 2:
                         player.atk += config.PLAYER_UPGRADE_DAMAGE
                         
@@ -92,7 +93,7 @@ if __name__ == '__main__':
             isPause = True
             pauseTime = curTime
             player.lvUp()
-            options = [f'AS +{config.PLAYER_UPGRADE_AS}%',f'HP +{config.PLAYER_UPGRADE_HP}',f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
+            options = [f'AS +{config.PLAYER_UPGRADE_AS}%',f'Range +{config.PLAYER_UPGRADE_RANG}',f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
             upgradeWin = UpgradeWindow(screen,options)
             
         if isPause:

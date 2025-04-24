@@ -4,8 +4,8 @@ import Utils.GameFormula as GF
 from Utils.Setting import WIDTH,HEIGHT,ENEMY_INITHP,ENEMY_INITSPEED
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
-        self.hp = ENEMY_INITHP
+    def __init__(self,hp):
+        self.hp = hp
         self.speed = ENEMY_INITSPEED
         self.exp = GF.calEnemyExp(self.hp)
         super().__init__()

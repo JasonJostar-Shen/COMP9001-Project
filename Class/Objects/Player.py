@@ -16,6 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.range = 500
         self.atk = PLAYER_DAMAGE
         self.attackSpeed = PLAYER_AS
+        self.killcount = 0
         self.lv = 1
         super().__init__()
         self.image = pygame.Surface((50,50),pygame.SRCALPHA)
@@ -35,11 +36,6 @@ class Player(pygame.sprite.Sprite):
     def gainExp(self,exp):
         self.exp += exp
         print(f"Player gained Exp!: {self.exp}")
-        # lvGap = GF.calLVGap(self.lv)
-        # if self.exp > lvGap:
-        #     self.exp -= lvGap
-        #     self.lv += 1
-        #     print(f"Level Up! I am LV{self.lv} now! Exp is {self.exp}")
             
     def isUpgrade(self):
         return self.exp >= GF.calLVGap(self.lv)
