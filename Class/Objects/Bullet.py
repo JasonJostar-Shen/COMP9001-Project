@@ -28,10 +28,7 @@ class Bullet(pygame.sprite.Sprite):
         self.velocity = (dx/distance * self.speed, dy/distance * self.speed)
 
     def update(self):
-        if not self.target.alive():  # 检查是否还在某个 group 里
-            self.kill()
-            return
-        self.calVelocity()
+        if self.target.alive(): self.calVelocity()
         self.rect.x += self.velocity[0]
         self.rect.y += self.velocity[1]
         if (self.rect.right < 0 or self.rect.left > WIDTH

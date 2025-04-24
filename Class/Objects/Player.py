@@ -81,7 +81,7 @@ class Player(pygame.sprite.Sprite):
     def rotatoToTarget(self):
         if self.target is None:
             # rotated_image = pygame.transform.rotate(self.originalTurret, 0)
-            self.angle = 0
+            # self.angle = 0
             return
 
         dx = self.target.rect.centerx - self.rect.centerx
