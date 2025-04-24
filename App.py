@@ -19,7 +19,7 @@ def initSprites():
     enemySprites = pygame.sprite.LayeredUpdates()
     bulletsSprites = pygame.sprite.LayeredUpdates()
     wall = Wall()
-    sprites.add(player,layer = 2)
+    # sprites.add(player,layer = 2)
     sprites.add(wall,layer = 1)
     statusBar = StatusBar(player)
     return player,wall,sprites,enemySprites,bulletsSprites,statusBar
@@ -118,15 +118,15 @@ if __name__ == '__main__':
         collsionEvent(player,wall,enemySprites,bulletSprites)
 
         player.findTarget(enemySprites)
-        player.update()
+
         bulletSprites.update()
         enemySprites.update()
-
         screen.blit(bg, (0,0))
         player.aimTarget(screen)
         sprites.draw(screen)
         bulletSprites.draw(screen)
         enemySprites.draw(screen)
+        player.draw(screen)
         statusBar.update(screen)
 
 

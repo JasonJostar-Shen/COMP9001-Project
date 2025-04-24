@@ -2,10 +2,10 @@ import pygame
 import math
 import Utils.GameFormula as GF
 from Class.Objects.Bullet import Bullet
-# from Bullet import Bullet
-from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE
+from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE,PLAYER_BASE_URL,PLAYER_TURRET_URL
 
-INITPOSTION = (WIDTH // 2, HEIGHT-50)
+INITPOSTION = (WIDTH // 2, HEIGHT-25)
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -19,19 +19,35 @@ class Player(pygame.sprite.Sprite):
         self.killcount = 0
         self.lv = 1
         super().__init__()
-        self.image = pygame.Surface((50,50),pygame.SRCALPHA)
-        pygame.draw.polygon(self.image, (0,255,0), [(25, 0), (0, 50), (50, 50)])
-        self.originalImage = self.image
-        self.rect = self.image.get_rect()
+        self.baseImg = pygame.image.load(PLAYER_BASE_URL).convert_alpha()
+        self.turretImg = pygame.image.load(PLAYER_TURRET_URL).convert_alpha()
+        self.surface = pygame.Surface((50,50),pygame.SRCALPHA)
+        # pygame.draw.polygon(self.surface, (0,255,0), [(25, 0), (0, 50), (50, 50)])
+        # self.originalTurret = self.turretImg
+        # self.originalBase = self.baseImg
+        self.rect = self.surface.get_rect()
         self.rect.center = INITPOSTION
-        self.mask = pygame.mask.from_surface(self.image)
+        # self.mask = pygame.mask.from_surface(self.surface)
 
-    def update(self):
+    def draw(self,screen):
         self.rotatoToTarget()
+        
+        base = pygame.transform.rotate(self.baseImg,self.angle)
+        baseRect = base.get_rect(center=self.rect.center)
+        screen.blit(base,baseRect)
+        
+        turret = pygame.transform.rotate(self.turretImg,self.angle)
+
+        offset = pygame.math.Vector2(0, -19)
+        offset.rotate_ip(-self.angle)
+        turretRect=turret.get_rect(center=self.rect.center+offset)
+        screen.blit(turret,turretRect)
+        
 
     def aimTarget(self,screen):
         if self.target:
             pygame.draw.line(screen, (255, 0, 0), self.rect.center, self.target.rect.center, 2)
+    
 
     def gainExp(self,exp):
         self.exp += exp
@@ -63,7 +79,7 @@ class Player(pygame.sprite.Sprite):
 
     def rotatoToTarget(self):
         if self.target is None:
-            rotated_image = pygame.transform.rotate(self.originalImage, 0)
+            # rotated_image = pygame.transform.rotate(self.originalTurret, 0)
             self.angle = 0
             return
 
@@ -71,15 +87,15 @@ class Player(pygame.sprite.Sprite):
         dy = self.target.rect.centery - self.rect.centery
         angle = math.degrees(math.atan2(-dy, dx))  # pygame y轴向下为正
 
-        corrected_angle = angle - 90
+        self.angle = angle - 90
 
-        rotated_image = pygame.transform.rotate(self.originalImage, corrected_angle)
+        # rotated_image = pygame.transform.rotate(self.originalTurret, angle)
 
-        old_center = self.rect.center
-        self.image = rotated_image
-        self.rect = self.image.get_rect(center=old_center)
+        # old_center = self.rect.center
+        # self.surface = rotated_image
+        # self.rect = self.surface.get_rect(center=old_center)
 
-        self.angle = corrected_angle
+        
 
     def takenDamage(self,damage:int):
         self.hp -= damage
