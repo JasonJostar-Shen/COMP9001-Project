@@ -1,6 +1,6 @@
 import pygame
 import math
-from Class.Enemy import Enemy
+from Class.Objects.Enemy import Enemy
 from Utils.Setting import WIDTH,HEIGTH
 
 class Bullet(pygame.sprite.Sprite):

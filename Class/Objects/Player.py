@@ -1,9 +1,9 @@
 import pygame
 import math
 import Utils.GameFormula as GF
-from Class.Bullet import Bullet
+from Class.Objects.Bullet import Bullet
 # from Bullet import Bullet
-from Utils.Setting import WIDTH,HEIGTH,PLAYER_INITHP,PLAYER_FIRESPEED,PLAYER_DAMAGE,STATUSWIDTH
+from Utils.Setting import WIDTH,HEIGTH,PLAYER_INITHP,PLAYER_FIRESPEED,PLAYER_DAMAGE
 
 INITPOSTION = (WIDTH // 2, HEIGTH-50)
 
@@ -35,12 +35,20 @@ class Player(pygame.sprite.Sprite):
     def gainExp(self,exp):
         self.exp += exp
         print(f"Player gained Exp!: {self.exp}")
-        lvGap = GF.calLVGap(self.lv)
-        if self.exp > lvGap:
-            self.exp -= lvGap
-            self.lv += 1
-            print(f"Level Up! I am LV{self.lv} now! Exp is {self.exp}")
+        # lvGap = GF.calLVGap(self.lv)
+        # if self.exp > lvGap:
+        #     self.exp -= lvGap
+        #     self.lv += 1
+        #     print(f"Level Up! I am LV{self.lv} now! Exp is {self.exp}")
+            
+    def isUpgrade(self):
+        return self.exp >= GF.calLVGap(self.lv)
 
+    def lvUp(self):
+        self.exp -= GF.calLVGap(self.lv)
+        self.lv += 1
+        
+    
     def findTarget(self,group):
         if len(group) == 0: return
         target = None

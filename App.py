@@ -1,8 +1,8 @@
 import pygame
-from Class.Player import Player
-from Class.Enemy import Enemy
-from Class.Wall import Wall
-from Class.StatusBar import StatusBar
+from Class.Objects.Player import Player
+from Class.Objects.Enemy import Enemy
+from Class.Components.Wall import Wall
+from Class.Components.StatusBar import StatusBar
 from Utils.Setting import WIDTH,HEIGTH,ENEMY_MAX,ENEMY_COOLDOWN,FPS,BG_URL,STATUSWIDTH
 
 def initWindow():
@@ -41,6 +41,7 @@ def collsionEvent(player:Player,wall,enemies,bullets):
             if enemy.isDead():
                 player.gainExp(enemy.exp)
                 enemy.kill()
+                
             # for enemy in bulletHitEnenmy:
             #     print("Hit!")
 
@@ -50,15 +51,15 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((WIDTH+STATUSWIDTH,HEIGTH))
     pygame.display.set_caption("TestWindow")
     bg = initWindow()
-    
+    isPause = False
     player,wall,sprites,enemySprites,bulletSprites,statusBar = initSprites()
     clock = pygame.time.Clock()
     isEnd = False
     startTime = pygame.time.get_ticks()
     enemyRespondTime = startTime
     playerFireTime = startTime
+    pauseTime = None
     while not isEnd:
-        
         clock.tick(FPS)
         curTime = pygame.time.get_ticks()
         for event in pygame.event.get():
@@ -67,6 +68,17 @@ if __name__ == '__main__':
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     isEnd = True
+                if event.key == pygame.K_p:
+                    isPause = not isPause
+                    if isPause:
+                        pauseTime = curTime
+                        
+        if isPause: continue
+        if pauseTime != None:
+            deltaTime = curTime - pauseTime
+            enemyRespondTime += deltaTime
+            playerFireTime += deltaTime
+            pauseTime = None
         curEnemy = len(enemySprites)
         # print(curTime,enemyRespondtime)
         if curEnemy < ENEMY_MAX and (curTime - enemyRespondTime) >= ENEMY_COOLDOWN:
@@ -78,6 +90,7 @@ if __name__ == '__main__':
             playerFireTime = curTime
             player.shoot(bulletSprites)
         collsionEvent(player,wall,enemySprites,bulletSprites)
+
         player.findTarget(enemySprites)
         player.update()
         bulletSprites.update()
@@ -89,6 +102,10 @@ if __name__ == '__main__':
         bulletSprites.draw(screen)
         enemySprites.draw(screen)
         statusBar.update(screen)
+        if player.isUpgrade():
+            isPause = True
+            pauseTime = curTime
+            player.lvUp()
 
         pygame.display.flip()
         

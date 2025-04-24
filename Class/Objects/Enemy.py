@@ -1,12 +1,13 @@
 import pygame
 import random
-from Utils.Setting import WIDTH,HEIGTH,ENEMY_INITHP,ENEMY_INITSPEED,ENEMY_INITEXP,STATUSWIDTH
+import Utils.GameFormula as GF
+from Utils.Setting import WIDTH,HEIGTH,ENEMY_INITHP,ENEMY_INITSPEED
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         self.hp = ENEMY_INITHP
         self.speed = ENEMY_INITSPEED
-        self.exp = ENEMY_INITEXP
+        self.exp = GF.calEnemyExp(self.hp)
         super().__init__()
 
         self.image = pygame.Surface((20,20),pygame.SRCALPHA)

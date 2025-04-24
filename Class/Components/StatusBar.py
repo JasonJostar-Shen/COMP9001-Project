@@ -1,6 +1,6 @@
 import pygame
 from Utils.Setting import STATUSWIDTH,HEIGTH,WIDTH
-from Class.Player import Player
+from Class.Objects.Player import Player
 class StatusBar:
     def __init__(self,player:Player):
         self.player = player
