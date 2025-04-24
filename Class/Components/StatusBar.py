@@ -31,5 +31,7 @@ class StatusBar:
         texts.append(self.front.render(f"Exp: {self.player.exp}/{self.player.getLvGap()}",True,(0,0,0)))
         texts.append(self.front.render(f"AS: {self.player.attackSpeed/1000.0:.1f}s",True,(0,0,0)))
         texts.append(self.front.render(f"ATK: {self.player.atk}",True,(0,0,0)))
+        texts.append(self.front.render(f"Ramge: {self.player.range}",True,(0,0,0)))
+        texts.append(self.front.render(f"Kills: {self.player.killcount}",True,(0,0,0)))
         for i in range(len(texts)):
             self.surface.blit(texts[i],(leftTopGap[0],leftTopGap[1]+i*interval))

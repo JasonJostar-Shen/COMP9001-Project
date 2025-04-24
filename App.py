@@ -25,7 +25,10 @@ def initSprites():
     return player,wall,sprites,enemySprites,bulletsSprites,statusBar
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates):
-    enemy = Enemy(GF.calEnemyHP(player.lv))
+    hp = GF.calEnemyHP(player.killcount)
+    speed = GF.calEnemySpeed(player.killcount)
+    enemy = Enemy(hp,speed)
+    print(hp,speed)
     sprites.add(enemy,layer = 0)
 
 def collsionEvent(player:Player,wall,enemies,bullets):

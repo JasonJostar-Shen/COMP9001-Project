@@ -51,6 +51,7 @@ class Player(pygame.sprite.Sprite):
 
     def gainExp(self,exp):
         self.exp += exp
+        self.killcount += 1
         print(f"Player gained Exp!: {self.exp}")
             
     def isUpgrade(self):

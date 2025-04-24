@@ -4,9 +4,9 @@ import Utils.GameFormula as GF
 from Utils.Setting import WIDTH,HEIGHT,ENEMY_INITHP,ENEMY_INITSPEED
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,hp):
+    def __init__(self,hp,speed):
         self.hp = hp
-        self.speed = ENEMY_INITSPEED
+        self.speed = speed
         self.exp = GF.calEnemyExp(self.hp)
         super().__init__()
 
@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
     
     def takenDamage(self,damage:int):
         self.hp -= damage
-        print(f"Hit me! My HP is {self.hp}")
+        # print(f"Hit me! My HP is {self.hp}")
     
     def isDead(self):
         return self.hp <= 0
