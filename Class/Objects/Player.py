@@ -70,7 +70,7 @@ class Player(pygame.sprite.Sprite):
         attribute = option[0]
         value = option[1]
         if attribute == 'AS':
-            self.atkSpeed *= value/100.0
+            self.atkSpeed *= 1-value/100.0
         elif attribute == 'ATK':
             self.atk += value
         elif attribute == 'Range':

@@ -25,9 +25,9 @@ def GenerateUpgradeOption(num):
     upgradeDict = config.UPGRADE_DICT
     options = []
     for i in range(num):
-        key = random.choice(list(upgradeDict.keys()))
+        key = random.choices(list(upgradeDict.keys()),weights=config.UPGRADE_WEIGHT_KEY,k=1)[0]
         valueList = upgradeDict[key]
-        value = random.choices(valueList,weights=config.UPGRADE_WEIGHT,k=1)[0]
+        value = random.choices(valueList,weights=config.UPGRADE_WEIGHT_VALUE,k=1)[0]
         index = valueList.index(value)
         options.append((key,value,index))
     return options

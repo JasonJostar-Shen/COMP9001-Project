@@ -23,6 +23,7 @@ PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
 
 UPGRADE_DICT = {'ATK':[25,50,100],'Range':[50,100,200],'AS':[15,20,50]}
-UPGRADE_WEIGHT = [0.5,0.3,0.2]
+UPGRADE_WEIGHT_KEY = [0.4,0.2,0.4]
+UPGRADE_WEIGHT_VALUE = [0.5,0.3,0.2]
 
 EFFECT_TYPE = ['FadeOut']
