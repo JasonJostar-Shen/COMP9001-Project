@@ -8,13 +8,13 @@ def CalEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
 
 def CalEnemyHP(curKills):
-    return config.ENEMY_INITHP + curKills // 5 * 10
+    return config.ENEMY_INITHP + curKills // 5 * 50
 
 def CalEnemySpeed(curKills):
-    return config.ENEMY_INITSPEED + curKills // 100 * 1
+    return config.ENEMY_INITSPEED + curKills // 80 * 1
 
 def CalEnemyCD(curKills):
-    cd = config.ENEMY_COOLDOWN - curKills//2 * 10
+    cd = config.ENEMY_COOLDOWN - curKills//10 * 100
     cd =  cd if cd > config.ENEMY_COOLDOWN_MIN else config.ENEMY_COOLDOWN_MIN
     return cd
     
