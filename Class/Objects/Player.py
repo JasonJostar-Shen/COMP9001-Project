@@ -3,9 +3,9 @@ import math
 import Utils.GameFormula as GF
 from Class.Objects.Bullet import Bullet
 # from Bullet import Bullet
-from Utils.Setting import WIDTH,HEIGTH,PLAYER_INITHP,PLAYER_FIRESPEED,PLAYER_DAMAGE
+from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE
 
-INITPOSTION = (WIDTH // 2, HEIGTH-50)
+INITPOSTION = (WIDTH // 2, HEIGHT-50)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -14,8 +14,8 @@ class Player(pygame.sprite.Sprite):
         self.target = None
         self.angle = 0
         self.range = 500
-        self.damage = PLAYER_DAMAGE
-        self.fireSpeed = PLAYER_FIRESPEED
+        self.atk = PLAYER_DAMAGE
+        self.attackSpeed = PLAYER_AS
         self.lv = 1
         super().__init__()
         self.image = pygame.Surface((50,50),pygame.SRCALPHA)

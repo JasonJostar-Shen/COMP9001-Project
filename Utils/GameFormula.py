@@ -5,3 +5,6 @@ def calLVGap(curLV):
 
 def calEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
+
+def calEnemyHP(curLV):
+    return config.ENEMY_INITHP + (curLV-1) // 3 * 50

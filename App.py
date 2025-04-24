@@ -3,11 +3,13 @@ from Class.Objects.Player import Player
 from Class.Objects.Enemy import Enemy
 from Class.Components.Wall import Wall
 from Class.Components.StatusBar import StatusBar
-from Utils.Setting import WIDTH,HEIGTH,ENEMY_MAX,ENEMY_COOLDOWN,FPS,BG_URL,STATUSWIDTH
+from Class.Components.UpgradeWindow import UpgradeWindow
+import Utils.Setting as config
+from Utils.Setting import WIDTH,HEIGHT,ENEMY_MAX,ENEMY_COOLDOWN,FPS,BG_URL,STATUSWIDTH
 
 def initWindow():
     bg = pygame.image.load(BG_URL).convert()
-    bg = pygame.transform.scale(bg, (WIDTH, HEIGTH))
+    bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
     return bg
 
 def initSprites():
@@ -37,7 +39,7 @@ def collsionEvent(player:Player,wall,enemies,bullets):
     for enemy in enemies:
         bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=True)
         if bulletHitEnenmy:
-            enemy.takenDamage(player.damage)
+            enemy.takenDamage(player.atk)
             if enemy.isDead():
                 player.gainExp(enemy.exp)
                 enemy.kill()
@@ -48,8 +50,8 @@ def collsionEvent(player:Player,wall,enemies,bullets):
 
 if __name__ == '__main__':
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH+STATUSWIDTH,HEIGTH))
-    pygame.display.set_caption("TestWindow")
+    screen = pygame.display.set_mode((WIDTH+STATUSWIDTH,HEIGHT))
+    pygame.display.set_caption("DefendSpace")
     bg = initWindow()
     isPause = False
     player,wall,sprites,enemySprites,bulletSprites,statusBar = initSprites()
@@ -59,6 +61,7 @@ if __name__ == '__main__':
     enemyRespondTime = startTime
     playerFireTime = startTime
     pauseTime = None
+    upgradeWin = None
     while not isEnd:
         clock.tick(FPS)
         curTime = pygame.time.get_ticks()
@@ -68,12 +71,34 @@ if __name__ == '__main__':
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     isEnd = True
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_p and upgradeWin == None:
                     isPause = not isPause
                     if isPause:
                         pauseTime = curTime
+            if upgradeWin != None:
+                result = upgradeWin.handleEvent(event)
+                if result is not None:
+                    upgrade_screen = None
+                    isPause = False
+                    print(f"Player selected: {result}")
+                    if result == 0:
+                        player.attackSpeed *= 1 - (config.PLAYER_UPGRADE_AS / 100)
+                    elif result == 1:
+                        player.hp += config.PLAYER_UPGRADE_HP
+                    elif result == 2:
+                        player.atk += config.PLAYER_UPGRADE_DAMAGE
                         
-        if isPause: continue
+        if player.isUpgrade():
+            isPause = True
+            pauseTime = curTime
+            player.lvUp()
+            options = [f'AS +{config.PLAYER_UPGRADE_AS}%',f'HP +{config.PLAYER_UPGRADE_HP}',f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
+            upgradeWin = UpgradeWindow(screen,options)
+            
+        if isPause:
+            if upgradeWin != None: upgradeWin.draw()
+            continue
+        
         if pauseTime != None:
             deltaTime = curTime - pauseTime
             enemyRespondTime += deltaTime
@@ -86,7 +111,7 @@ if __name__ == '__main__':
             curEnemy = len(enemySprites)
             enemyRespondTime = curTime
             print(f"EnemyNum: {curEnemy}")  
-        if curTime - playerFireTime >= player.fireSpeed:
+        if curTime - playerFireTime >= player.attackSpeed:
             playerFireTime = curTime
             player.shoot(bulletSprites)
         collsionEvent(player,wall,enemySprites,bulletSprites)
@@ -102,10 +127,7 @@ if __name__ == '__main__':
         bulletSprites.draw(screen)
         enemySprites.draw(screen)
         statusBar.update(screen)
-        if player.isUpgrade():
-            isPause = True
-            pauseTime = curTime
-            player.lvUp()
+
 
         pygame.display.flip()
         

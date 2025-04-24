@@ -1,7 +1,7 @@
 import pygame
 import math
 from Class.Objects.Enemy import Enemy
-from Utils.Setting import WIDTH,HEIGTH
+from Utils.Setting import WIDTH,HEIGHT
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self,pos,target:Enemy):
@@ -28,9 +28,12 @@ class Bullet(pygame.sprite.Sprite):
         self.velocity = (dx/distance * self.speed, dy/distance * self.speed)
 
     def update(self):
+        if not self.target.alive():  # 检查是否还在某个 group 里
+            self.kill()
+            return
         self.calVelocity()
         self.rect.x += self.velocity[0]
         self.rect.y += self.velocity[1]
         if (self.rect.right < 0 or self.rect.left > WIDTH
-            or self.rect.bottom < 0 or self.rect.top > HEIGTH):
+            or self.rect.bottom < 0 or self.rect.top > HEIGHT):
             self.kill()

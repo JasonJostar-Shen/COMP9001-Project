@@ -1,7 +1,7 @@
 import pygame
 import random
 import Utils.GameFormula as GF
-from Utils.Setting import WIDTH,HEIGTH,ENEMY_INITHP,ENEMY_INITSPEED
+from Utils.Setting import WIDTH,HEIGHT,ENEMY_INITHP,ENEMY_INITSPEED
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
