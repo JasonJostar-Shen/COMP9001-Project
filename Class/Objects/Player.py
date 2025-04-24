@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.range = 500
         self.atk = PLAYER_DAMAGE
         self.attackSpeed = PLAYER_AS
-        self.killcount = 0
+        self.kills = 0
         self.lv = 1
         super().__init__()
         self.baseImg = pygame.image.load(PLAYER_BASE_URL).convert_alpha()
@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
 
     def gainExp(self,exp):
         self.exp += exp
-        self.killcount += 1
+        self.kills += 1
         print(f"Player gained Exp!: {self.exp}")
             
     def isUpgrade(self):

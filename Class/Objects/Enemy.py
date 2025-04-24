@@ -10,10 +10,10 @@ class Enemy(pygame.sprite.Sprite):
         self.exp = GF.calEnemyExp(self.hp)
         super().__init__()
 
-        self.surface = pygame.Surface((20,20),pygame.SRCALPHA)
+        # self.surface = pygame.Surface((20,20),pygame.SRCALPHA)
         self.image = pygame.image.load(ENEMY_IMG_URL).convert_alpha()
         # pygame.draw.polygon(self.image, (255,0,0), [(0, 0), (20, 0), (10, 20)])
-        self.rect = self.surface.get_rect()
+        self.rect = self.image.get_rect()
         self.rect.center = (random.randint(self.rect.width, WIDTH - self.rect.width),-self.rect.height)
         # self.mask = pygame.mask.from_surface(self.image)
 

@@ -4,9 +4,10 @@ from Class.Objects.Enemy import Enemy
 from Class.Components.Wall import Wall
 from Class.Components.StatusBar import StatusBar
 from Class.Components.UpgradeWindow import UpgradeWindow
-import Utils.GameFormula as GF
+import Utils.GameUtils as GF
 import Utils.Setting as config
-from Utils.Setting import WIDTH,HEIGHT,ENEMY_MAX,ENEMY_COOLDOWN,FPS,BG_URL,STATUSWIDTH
+from Utils.Setting import WIDTH,HEIGHT,FPS,BG_URL,STATUSWIDTH
+
 
 def initWindow():
     bg = pygame.image.load(BG_URL).convert()
@@ -24,11 +25,11 @@ def initSprites():
     statusBar = StatusBar(player)
     return player,wall,sprites,enemySprites,bulletsSprites,statusBar
 
-def generateEnemy(sprites:pygame.sprite.LayeredUpdates):
-    hp = GF.calEnemyHP(player.killcount)
-    speed = GF.calEnemySpeed(player.killcount)
+def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player):
+    hp = GF.calEnemyHP(player.kills)
+    speed = GF.calEnemySpeed(player.kills)
     enemy = Enemy(hp,speed)
-    print(hp,speed)
+    # print(hp,speed)
     sprites.add(enemy,layer = 0)
 
 def collsionEvent(player:Player,wall,enemies,bullets):
@@ -48,92 +49,105 @@ def collsionEvent(player:Player,wall,enemies,bullets):
                 player.gainExp(enemy.exp)
                 enemy.kill()
                 
-            # for enemy in bulletHitEnenmy:
-            #     print("Hit!")
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((WIDTH + STATUSWIDTH, HEIGHT))
+        pygame.display.set_caption("DefendSpace")
+        self.bg = initWindow()
+        self.clock = pygame.time.Clock()
+        self.isEnd = False
+        self.restart()
+
+    def restart(self):
+        self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.statusBar = initSprites()
+        self.isPause = False
+        self.upgradeWin = None
+        self.startTime = pygame.time.get_ticks()
+        self.enemyRespondTime = self.startTime
+        self.playerFireTime = self.startTime
+        self.pauseTime = None
+
+    def run(self):
+        while not self.isEnd:
+            self.clock.tick(FPS)
+            curTime = pygame.time.get_ticks()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.isEnd = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.isEnd = True
+                    elif event.key == pygame.K_r:
+                        self.restart()
+                    elif event.key == pygame.K_p and self.upgradeWin is None:
+                        self.isPause = not self.isPause
+                        if self.isPause:
+                            self.pauseTime = curTime
+
+                if self.upgradeWin is not None:
+                    result = self.upgradeWin.handleEvent(event)
+                    if result is not None:
+                        self.upgradeWin = None
+                        self.isPause = False
+                        if result == 0:
+                            self.player.attackSpeed *= 1 - (config.PLAYER_UPGRADE_AS / 100)
+                        elif result == 1:
+                            self.player.range += config.PLAYER_UPGRADE_RANG
+                        elif result == 2:
+                            self.player.atk += config.PLAYER_UPGRADE_DAMAGE
+
+            if self.player.isUpgrade():
+                self.isPause = True
+                self.pauseTime = curTime
+                self.player.lvUp()
+                options = [f'AS +{config.PLAYER_UPGRADE_AS}%', f'Range +{config.PLAYER_UPGRADE_RANG}', f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
+                self.upgradeWin = UpgradeWindow(self.screen, options)
+
+            if self.isPause:
+                if self.upgradeWin is not None:
+                    self.upgradeWin.draw()
+                continue
+
+            if self.pauseTime is not None:
+                deltaTime = curTime - self.pauseTime
+                self.enemyRespondTime += deltaTime
+                self.playerFireTime += deltaTime
+                self.pauseTime = None
+
+            curEnemy = len(self.enemySprites)
+            enemyMax = GF.calEnemyMax(self.player.kills)
+            enemyCD = GF.calEnemyCD(self.player.kills)
+
+            if curEnemy < enemyMax and (curTime - self.enemyRespondTime) >= enemyCD:
+                generateEnemy(self.enemySprites,self.player)
+                self.enemyRespondTime = curTime
+
+            if curTime - self.playerFireTime >= self.player.attackSpeed:
+                self.playerFireTime = curTime
+                self.player.shoot(self.bulletSprites)
+
+            collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites)
+            self.player.findTarget(self.enemySprites)
+
+            self.bulletSprites.update()
+            self.enemySprites.update()
+
+            self.screen.blit(self.bg, (0, 0))
+            self.player.aimTarget(self.screen)
+            self.sprites.draw(self.screen)
+            self.bulletSprites.draw(self.screen)
+            self.enemySprites.draw(self.screen)
+            self.player.draw(self.screen)
+            self.statusBar.update(self.screen)
+
+            pygame.display.flip()
+
+        pygame.quit()
+    
 
 
 if __name__ == '__main__':
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH+STATUSWIDTH,HEIGHT))
-    pygame.display.set_caption("DefendSpace")
-    bg = initWindow()
-    isPause = False
-    player,wall,sprites,enemySprites,bulletSprites,statusBar = initSprites()
-    clock = pygame.time.Clock()
-    isEnd = False
-    startTime = pygame.time.get_ticks()
-    enemyRespondTime = startTime
-    playerFireTime = startTime
-    pauseTime = None
-    upgradeWin = None
-    while not isEnd:
-        clock.tick(FPS)
-        curTime = pygame.time.get_ticks()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                isEnd = True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    isEnd = True
-                if event.key == pygame.K_p and upgradeWin == None:
-                    isPause = not isPause
-                    if isPause:
-                        pauseTime = curTime
-            if upgradeWin != None:
-                result = upgradeWin.handleEvent(event)
-                if result is not None:
-                    upgrade_screen = None
-                    isPause = False
-                    print(f"Player selected: {result}")
-                    if result == 0:
-                        player.attackSpeed *= 1 - (config.PLAYER_UPGRADE_AS / 100)
-                    elif result == 1:
-                        player.range += config.PLAYER_UPGRADE_RANG
-                    elif result == 2:
-                        player.atk += config.PLAYER_UPGRADE_DAMAGE
-                        
-        if player.isUpgrade():
-            isPause = True
-            pauseTime = curTime
-            player.lvUp()
-            options = [f'AS +{config.PLAYER_UPGRADE_AS}%',f'Range +{config.PLAYER_UPGRADE_RANG}',f'ATK +{config.PLAYER_UPGRADE_DAMAGE}']
-            upgradeWin = UpgradeWindow(screen,options)
-            
-        if isPause:
-            if upgradeWin != None: upgradeWin.draw()
-            continue
-        
-        if pauseTime != None:
-            deltaTime = curTime - pauseTime
-            enemyRespondTime += deltaTime
-            playerFireTime += deltaTime
-            pauseTime = None
-        curEnemy = len(enemySprites)
-        # print(curTime,enemyRespondtime)
-        if curEnemy < ENEMY_MAX and (curTime - enemyRespondTime) >= ENEMY_COOLDOWN:
-            generateEnemy(enemySprites)
-            curEnemy = len(enemySprites)
-            enemyRespondTime = curTime
-            print(f"EnemyNum: {curEnemy}")  
-        if curTime - playerFireTime >= player.attackSpeed:
-            playerFireTime = curTime
-            player.shoot(bulletSprites)
-        collsionEvent(player,wall,enemySprites,bulletSprites)
-
-        player.findTarget(enemySprites)
-
-        bulletSprites.update()
-        enemySprites.update()
-        screen.blit(bg, (0,0))
-        player.aimTarget(screen)
-        sprites.draw(screen)
-        bulletSprites.draw(screen)
-        enemySprites.draw(screen)
-        player.draw(screen)
-        statusBar.update(screen)
-
-
-        pygame.display.flip()
-        
-
-    pygame.quit()
+    game = Game()
+    game.run()
