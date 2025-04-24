@@ -34,8 +34,8 @@ def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player):
     # print(hp,speed)
     sprites.add(enemy,layer = 0)
     
-def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,url=None):
-    group.add(Effect(type,pos,url))
+def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,fontSize=14,url=None):
+    group.add(Effect(type,pos,frame,text,fontSize,url))
 
 def collsionEvent(player:Player,wall,enemies,bullets,effects):
     EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
@@ -50,9 +50,13 @@ def collsionEvent(player:Player,wall,enemies,bullets,effects):
         bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=True)
         if bulletHitEnenmy:
             enemy.takenDamage(player.atk)
+            text = f'-{player.atk}'
+            textsize = 14
+            pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
+            generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
             if enemy.isDead():
                 player.gainExp(enemy.exp)
-                generateEffect(effects,'FadeOut',enemy.rect.center,config.ENEMY_IMG_URL)
+                generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=config.ENEMY_IMG_URL)
                 enemy.kill()
                 
 class Game:
@@ -75,16 +79,16 @@ class Game:
         self.pauseTime = None
 
     def run(self):
-        while not self.isEnd:
+        while True:
             self.clock.tick(config.FPS)
             curTime = pygame.time.get_ticks()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.isEnd = True
+                    break
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.isEnd = True
+                        break
                     elif event.key == pygame.K_r:
                         self.restart()
                     elif event.key == pygame.K_p and self.upgradeWin is None:

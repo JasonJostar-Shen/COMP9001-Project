@@ -2,7 +2,16 @@ import Utils.Setting as config
 import random
 
 def CalLVGap(curLV):
-    return curLV * config.PLAYER_LV_GAP
+    gapLv = (curLV - 1) // 3
+    if gapLv == 0: return curLV * config.PLAYER_LV_GAP[0]
+    gapLv = gapLv if gapLv < 4 else 4
+    lastExpGap = 0
+    for i in range(gapLv):
+        if gapLv > i:
+            lastExpGap += config.PLAYER_LV_GAP[i] * 3
+        else:
+            lastExpGap += config.PLAYER_LV_GAP[i] * (curLV - gapLv*3)
+    return lastExpGap
 
 def CalEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
