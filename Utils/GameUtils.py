@@ -8,7 +8,7 @@ def CalEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
 
 def CalEnemyHP(curKills):
-    return config.ENEMY_INITHP + curKills // 5 * 50
+    return config.ENEMY_INITHP + curKills // 5 * 25
 
 def CalEnemySpeed(curKills):
     return config.ENEMY_INITSPEED + curKills // 80 * 1
