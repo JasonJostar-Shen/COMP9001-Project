@@ -9,8 +9,7 @@ def CalLVGap(curLV):
     for i in range(gapLv):
         if gapLv > i:
             lastExpGap += config.PLAYER_LV_GAP[i] * 3
-        else:
-            lastExpGap += config.PLAYER_LV_GAP[i] * (curLV - gapLv*3)
+    lastExpGap += config.PLAYER_LV_GAP[i] * (curLV - gapLv*3)
     return lastExpGap
 
 def CalEnemyExp(initHP):
