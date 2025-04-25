@@ -48,4 +48,6 @@ def GetOptionText(option):
         return f'{attribute} +{value}'
     if attribute == 'AS':
         return f'{attribute} -{value}%'
+    if attribute == 'HP':
+        return f'{attribute} +{value}%'
     

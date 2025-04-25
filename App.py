@@ -66,7 +66,7 @@ class Game:
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
-        self.isEnd = False
+        self.isQuit = False
         self.restart()
 
     def restart(self):
@@ -79,16 +79,16 @@ class Game:
         self.pauseTime = None
 
     def run(self):
-        while True:
+        while not self.isQuit:
             self.clock.tick(config.FPS)
             curTime = pygame.time.get_ticks()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    break
+                    self.isQuit = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        break
+                        self.isQuit = True
                     elif event.key == pygame.K_r:
                         self.restart()
                     elif event.key == pygame.K_p and self.upgradeWin is None:
@@ -134,6 +134,7 @@ class Game:
 
             collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
             self.player.findTarget(self.enemySprites)
+            self.player.update()
             self.bulletSprites.update()
             self.enemySprites.update()
             self.effectSprites.update()
@@ -142,7 +143,9 @@ class Game:
             self.player.aimTarget(self.screen)
             self.sprites.draw(self.screen)
             self.bulletSprites.draw(self.screen)
-            self.enemySprites.draw(self.screen)
+            # self.enemySprites.draw(self.screen)
+            for enemy in self.enemySprites:
+                enemy.draw(self.screen)
             self.effectSprites.draw(self.screen)
             self.player.draw(self.screen)
             self.statusBar.update(self.screen)

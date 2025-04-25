@@ -2,14 +2,16 @@ import pygame
 import math
 import Utils.GameUtils as GU
 from Class.Objects.Bullet import Bullet
+from Class.Components.ProgressBar import ProgressBar
 from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE,PLAYER_BASE_URL,PLAYER_TURRET_URL
 
-INITPOSTION = (WIDTH // 2, HEIGHT-25)
+INITPOSTION = (WIDTH // 2, HEIGHT-70)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         self.exp = 0
+        self.maxHp = PLAYER_INITHP
         self.hp = PLAYER_INITHP
         self.target = None
         self.angle = 0
@@ -22,12 +24,11 @@ class Player(pygame.sprite.Sprite):
         self.baseImg = pygame.image.load(PLAYER_BASE_URL).convert_alpha()
         self.turretImg = pygame.image.load(PLAYER_TURRET_URL).convert_alpha()
         self.surface = pygame.Surface((50,50),pygame.SRCALPHA)
-        # pygame.draw.polygon(self.surface, (0,255,0), [(25, 0), (0, 50), (50, 50)])
-        # self.originalTurret = self.turretImg
-        # self.originalBase = self.baseImg
         self.rect = self.surface.get_rect()
         self.rect.center = INITPOSTION
-        # self.mask = pygame.mask.from_surface(self.surface)
+        self.lifeBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-30),self.maxHp,30,title="HP")
+        self.expBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-10),self.getLvGap(),30,False,title="EXP"
+                                  ,fillColor=(100, 150, 230),bgColor=(211, 211, 211))
 
     def draw(self,screen):
         self.rotatoToTarget()
@@ -42,17 +43,13 @@ class Player(pygame.sprite.Sprite):
         offset.rotate_ip(-self.angle)
         turretRect=turret.get_rect(center=self.rect.center+offset)
         screen.blit(turret,turretRect)
-        
+        self.lifeBar.draw(screen)
+        self.expBar.draw(screen)
 
     def aimTarget(self, screen):
         if self.target:
-            # 创建一个透明 Surface
             surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-
-            # 在上面画线（带 RGBA 色值）
             pygame.draw.line(surface, (255, 0, 0, 128), self.rect.center, self.target.rect.center, 2)
-
-            # 再把它 blit 到屏幕上
             screen.blit(surface, (0, 0))
     
 
@@ -67,6 +64,8 @@ class Player(pygame.sprite.Sprite):
     def lvUp(self,option):
         self.exp -= GU.CalLVGap(self.lv)
         self.lv += 1
+        self.expBar.maxValue = self.getLvGap()
+        self.expBar.setValue(self.exp)
         attribute = option[0]
         value = option[1]
         if attribute == 'AS':
@@ -75,6 +74,9 @@ class Player(pygame.sprite.Sprite):
             self.atk += value
         elif attribute == 'Range':
             self.range += value
+        elif attribute == 'HP':
+            self.hp += self.maxHp * value/100
+            self.hp = self.hp if self.hp < self.maxHp else self.maxHp
         
     
     def findTarget(self,group):
@@ -127,4 +129,8 @@ class Player(pygame.sprite.Sprite):
     
     def getLvGap(self):
         return GU.CalLVGap(self.lv)
+    
+    def update(self):
+        self.lifeBar.update(self.hp)
+        self.expBar.update(self.exp)
     

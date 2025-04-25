@@ -2,6 +2,7 @@ import pygame
 import random
 import Utils.GameUtils as GU
 from Utils.Setting import WIDTH,HEIGHT,ENEMY_INITHP,ENEMY_INITSPEED,ENEMY_IMG_URL
+from Class.Components.ProgressBar import ProgressBar
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self,hp,speed):
@@ -14,18 +15,25 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(self.rect.width, WIDTH - self.rect.width),-self.rect.height)
         # self.mask = pygame.mask.from_surface(self.image)
+        self.lifeBar = ProgressBar(self.image.get_width(),6,self.getLifeBarCenter(),self.hp,5)
 
     def update(self):
         self.rect.y += self.speed
         alpha = self.image.get_alpha()
         if alpha != 255: self.image.set_alpha(alpha+5)
-        # if self.rect.top > HEIGHT:
-        #     self.kill()
+        self.lifeBar.update(self.hp,self.getLifeBarCenter())
     
     def takenDamage(self,damage:int):
         self.hp -= damage
         self.image.set_alpha(180)
-        # print(f"Hit me! My HP is {self.hp}")
     
     def isDead(self):
         return self.hp <= 0
+    
+    def getLifeBarCenter(self):
+        return (self.rect.midtop[0],self.rect.midtop[1]-5)
+    
+    def draw(self,screen):
+        screen.blit(self.image,self.rect)
+        self.lifeBar.draw(screen)
+        
