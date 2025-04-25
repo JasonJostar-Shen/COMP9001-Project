@@ -62,7 +62,7 @@ PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
 PLYAER_HP_SCORE = 2
 
-UPGRADE_DICT = {'ATK':[10,25,50,100],'Range':[50,100,200],'AS':[10,15,20,50],'HP':[25,50,75,100],'Bounce':1}
+UPGRADE_DICT = {'ATK':[10,25,50,100],'Range':[50,75,100,200],'AS':[10,15,20,50],'HP':[25,50,75,100],'Bounce':1}
 UPGRADE_WEIGHT_KEY = [0.4,0.1,0.4,0.08,0.02]
 UPGRADE_WEIGHT_VALUE = [0.6,0.33,0.05,0.02]
 
