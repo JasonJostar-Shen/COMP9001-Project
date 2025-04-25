@@ -20,7 +20,7 @@ def initWindow():
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig):
     hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
     speed = GU.CalEnemyHP(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
-    enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'])
+    enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'],enemyConfig['expParam'])
     # print(hp,speed)
     sprites.add(enemy,layer = 0)
     
@@ -193,7 +193,7 @@ class Game:
             enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
 
             if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
-                enemyConfig = config.ENEMY_DICT['EyeLander']
+                enemyConfig = GU.GenerateEnemyConfig()
                 generateEnemy(self.enemySprites,self.player,enemyConfig)
                 self.enemyRespondTime = self.curTime
 

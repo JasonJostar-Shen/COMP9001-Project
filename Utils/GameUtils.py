@@ -12,8 +12,8 @@ def CalLVGap(curLV):
     lastExpGap += config.PLAYER_LV_GAP[i] * (curLV - gapLv*3)
     return lastExpGap
 
-def CalEnemyExp(initHP):
-    return int(initHP*config.ENEMY_EXP_PARAM)
+def CalEnemyExp(initHP,expParam):
+    return int(initHP*expParam)
 
 def CalEnemyHP(curKills,hp,interval,increment):
     return hp + curKills // interval * increment
@@ -43,6 +43,11 @@ def GenerateUpgradeOption(num):
             index = valueList.index(value)
         options.append((key,value,index))
     return options
+
+def GenerateEnemyConfig():
+    enemyDict = config.ENEMY_DICT
+    key = random.choices(list(enemyDict.keys()),weights=config.ENEMY_SPWAN_WEIGHT,k=1)[0]
+    return enemyDict[key]
 
 def GetOptionText(option):
     attribute = option[0]

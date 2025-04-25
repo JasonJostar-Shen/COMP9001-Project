@@ -5,10 +5,10 @@ from Utils.Setting import WIDTH,ENEMY_IMG_URL
 from Class.Components.ProgressBar import ProgressBar
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,hp,speed,url,score):
+    def __init__(self,hp,speed,url,score,expParam):
         self.hp = hp
         self.speed = speed
-        self.exp = GU.CalEnemyExp(self.hp)
+        self.exp = GU.CalEnemyExp(self.hp,expParam)
         self.score = score
         self.url = url
         super().__init__()
