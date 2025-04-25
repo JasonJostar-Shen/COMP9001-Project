@@ -5,6 +5,7 @@ from Class.Objects.Effect import Effect
 from Class.Components.Wall import Wall
 from Class.Components.StatusBar import StatusBar
 from Class.Components.UpgradeWindow import UpgradeWindow
+from Class.SoundManager import SoundManager
 import Utils.GameUtils as GU
 import Utils.Setting as config
 
@@ -26,38 +27,13 @@ def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig
 def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,fontSize=14,fontColor=(255,255,255),url=None):
     group.add(Effect(type,pos,frame,text,fontSize,fontColor,url))
 
-def collsionEvent(player:Player,wall,enemies,bullets,effects):
-    EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
-    if EnenmyHitWall:
-        for enemy in EnenmyHitWall:
-            player.takenDamage(enemy.hp)
-            generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
-    
-    for enemy in enemies:
-        bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=False)
-        if bulletHitEnenmy:
-            
-            for bullet in bulletHitEnenmy:
-                if enemy not in bullet.attackedTargets:
-                    enemy.takenDamage(bullet.damage)
-                    text = f'-{player.atk}'
-                    textsize = 14
-                    pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
-                    generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
-                    if not bullet.bounce(enemies):
-                        bullet.kill()
-            
-            if enemy.isDead():
-                player.gainExp(enemy.exp,enemy.score)
-                if player.kills % 50 == 0:
-                    generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
-                generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=enemy.url)
-                enemy.kill()
+
                 
 class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT))
+        self.SoundMananger = SoundManager()
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
@@ -92,6 +68,35 @@ class Game:
             onQuit=self.quitGame
         )
         return player, wall, sprites, enemySprites, bulletsSprites, effectSprites, statusBar
+    
+    def collsionEvent(self,player:Player,wall,enemies,bullets,effects):
+        EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
+        if EnenmyHitWall:
+            for enemy in EnenmyHitWall:
+                player.takenDamage(enemy.hp)
+                generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
+        
+        for enemy in enemies:
+            bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=False)
+            if bulletHitEnenmy:
+                
+                for bullet in bulletHitEnenmy:
+                    if enemy not in bullet.attackedTargets:
+                        enemy.takenDamage(bullet.damage)
+                        self.SoundMananger.hitEnemy()
+                        text = f'-{player.atk}'
+                        textsize = 14
+                        pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
+                        generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
+                        if not bullet.bounce(enemies):
+                            bullet.kill()
+                
+                if enemy.isDead():
+                    player.gainExp(enemy.exp,enemy.score)
+                    if player.kills % 50 == 0:
+                        generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
+                    generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=enemy.url)
+                    enemy.kill()
     
     def gameOver(self):
         overlay = pygame.Surface(self.screen.get_size(),pygame.SRCALPHA)
@@ -208,9 +213,10 @@ class Game:
                 atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
                 if self.curTime - self.playerFireTime >= atkSpeed:
                     self.playerFireTime = self.curTime
-                    self.player.shoot(self.bulletSprites)
+                    self.player.shoot(self.bulletSprites,self.SoundMananger)
+                    
 
-                collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
+                self.collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
                 self.player.findTarget(self.enemySprites)
                 self.player.update()
                 self.bulletSprites.update(self.isFast)

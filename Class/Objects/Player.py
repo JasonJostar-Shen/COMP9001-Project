@@ -117,10 +117,11 @@ class Player(pygame.sprite.Sprite):
         self.hp -= damage
         self.lifeBar.setValue(self.hp)
     
-    def shoot(self,bulletGroup):
+    def shoot(self,bulletGroup,soundManager):
         if self.target:
             bullet = Bullet(self.atk,self.rect.center,self.target,self.bounce,self.range//2)
             bulletGroup.add(bullet)
+            soundManager.shoot()
     
     def hasTarget(self):
         return self.target != None

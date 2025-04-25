@@ -7,8 +7,10 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self,damage,pos,target:Enemy,bounces,bounceRange):
         super().__init__()
         self.damage = damage
-        self.image = pygame.Surface((5,5),pygame.SRCALPHA)
-        pygame.draw.circle(self.image,(255,255,0),(4,4),4)
+        self.image = pygame.Surface((14,14),pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (150, 150, 100), (7, 7), 5)
+        pygame.draw.circle(self.image,(42, 191, 206),(7,7),3)
+        pygame.draw.circle(self.image,(52, 201, 216),(7,7),2)
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.target = target
