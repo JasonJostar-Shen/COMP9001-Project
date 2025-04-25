@@ -15,17 +15,7 @@ def initWindow():
     bg = pygame.transform.scale(bg, (config.WIDTH, config.HEIGHT))
     return bg
 
-def initSprites():
-    player = Player()
-    sprites = pygame.sprite.LayeredUpdates()
-    enemySprites = pygame.sprite.LayeredUpdates()
-    bulletsSprites = pygame.sprite.LayeredUpdates()
-    effectSprites = pygame.sprite.LayeredUpdates()
-    wall = Wall()
-    # sprites.add(player,layer = 2)
-    sprites.add(wall,layer = 1)
-    statusBar = StatusBar(player)
-    return player,wall,sprites,enemySprites,bulletsSprites,effectSprites,statusBar
+
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig):
     hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
@@ -72,7 +62,7 @@ class Game:
         self.restart()
 
     def restart(self):
-        self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = initSprites()
+        self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = self.initSprites()
         self.isPause = False
         self.isFast = False
         self.upgradeWin = None
@@ -81,25 +71,55 @@ class Game:
         self.playerFireTime = self.startTime
         self.pauseTime = None
 
+    def initSprites(self):  # 将initSprites改为实例方法
+        player = Player()
+        sprites = pygame.sprite.LayeredUpdates()
+        enemySprites = pygame.sprite.LayeredUpdates()
+        bulletsSprites = pygame.sprite.LayeredUpdates()
+        effectSprites = pygame.sprite.LayeredUpdates()
+        wall = Wall()
+        sprites.add(wall, layer=1)
+        statusBar = StatusBar(
+            player,
+            onPause=self.togglePasue,
+            onFast=self.toggleFast,
+            onRestart=self.restart,
+            onQuit=self.quitGame
+        )
+        return player, wall, sprites, enemySprites, bulletsSprites, effectSprites, statusBar
+    
+    def togglePasue(self):
+        self.isPause = not self.isPause
+        if self.isPause:
+            self.pauseTime = self.curTime
+    
+    def toggleFast(self):
+        self.isFast = not self.isFast
+        
+    def quitGame(self):
+        self.isQuit = True
+    
+    
     def run(self):
         while not self.isQuit:
             self.clock.tick(config.FPS)
-            curTime = pygame.time.get_ticks()
+            self.curTime = pygame.time.get_ticks()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isQuit = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.isQuit = True
+                        self.quitGame()
                     elif event.key == pygame.K_r:
                         self.restart()
                     elif event.key == pygame.K_p and self.upgradeWin is None:
-                        self.isPause = not self.isPause
-                        if self.isPause:
-                            self.pauseTime = curTime
+                        # self.isPause = not self.isPause
+                        # if self.isPause:
+                        #     self.pauseTime = self.curTime
+                        self.togglePasue()
                     elif event.key == pygame.K_f:
-                        self.isFast = not self.isFast
+                        self.toggleFast()
 
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
@@ -110,17 +130,19 @@ class Game:
 
             if self.player.isUpgrade() and self.upgradeWin == None:
                 self.isPause = True
-                self.pauseTime = curTime
+                self.pauseTime = self.curTime
                 self.options = GU.GenerateUpgradeOption(3)
                 self.upgradeWin = UpgradeWindow(self.screen, self.options)
-
+                
+            self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
+            
             if self.isPause:
                 if self.upgradeWin is not None:
                     self.upgradeWin.draw()
                 continue
 
             if self.pauseTime is not None:
-                deltaTime = curTime - self.pauseTime
+                deltaTime = self.curTime - self.pauseTime
                 self.enemyRespondTime += deltaTime
                 self.playerFireTime += deltaTime
                 self.pauseTime = None
@@ -129,14 +151,14 @@ class Game:
             enemyMax = GU.CalEnemyMax(self.player.kills)
             enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
 
-            if curEnemy < enemyMax and (curTime - self.enemyRespondTime) >= enemyCD:
+            if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
                 enemyConfig = config.ENEMY_DICT['EyeLander']
                 generateEnemy(self.enemySprites,self.player,enemyConfig)
-                self.enemyRespondTime = curTime
+                self.enemyRespondTime = self.curTime
 
             atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
-            if curTime - self.playerFireTime >= atkSpeed:
-                self.playerFireTime = curTime
+            if self.curTime - self.playerFireTime >= atkSpeed:
+                self.playerFireTime = self.curTime
                 self.player.shoot(self.bulletSprites)
 
             collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
@@ -155,7 +177,7 @@ class Game:
                 enemy.draw(self.screen)
             self.effectSprites.draw(self.screen)
             self.player.draw(self.screen)
-            self.statusBar.update(self.screen)
+            # self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
 
             pygame.display.flip()
 
