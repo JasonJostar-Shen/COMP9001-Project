@@ -119,7 +119,7 @@ class Player(pygame.sprite.Sprite):
     
     def shoot(self,bulletGroup):
         if self.target:
-            bullet = Bullet(self.rect.center,self.target,self.bounce,self.range//2)
+            bullet = Bullet(self.atk,self.rect.center,self.target,self.bounce,self.range//2)
             bulletGroup.add(bullet)
     
     def hasTarget(self):

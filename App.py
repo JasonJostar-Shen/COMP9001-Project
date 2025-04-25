@@ -32,21 +32,20 @@ def collsionEvent(player:Player,wall,enemies,bullets,effects):
         for enemy in EnenmyHitWall:
             player.takenDamage(enemy.hp)
             generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
-            for bullet in bullets:
-                if bullet.target == enemy:
-                    bullet.kill()
     
     for enemy in enemies:
         bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=False)
         if bulletHitEnenmy:
-            enemy.takenDamage(player.atk)
-            text = f'-{player.atk}'
-            textsize = 14
-            pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
-            generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
+            
             for bullet in bulletHitEnenmy:
-                if not bullet.bounce(enemies):
-                    bullet.kill()
+                if enemy not in bullet.attackedTargets:
+                    enemy.takenDamage(bullet.damage)
+                    text = f'-{player.atk}'
+                    textsize = 14
+                    pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
+                    generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
+                    if not bullet.bounce(enemies):
+                        bullet.kill()
             
             if enemy.isDead():
                 player.gainExp(enemy.exp,enemy.score)
@@ -77,7 +76,7 @@ class Game:
         self.playerFireTime = self.startTime
         self.pauseTime = None
 
-    def initSprites(self):  # 将initSprites改为实例方法
+    def initSprites(self):  
         player = Player()
         sprites = pygame.sprite.LayeredUpdates()
         enemySprites = pygame.sprite.LayeredUpdates()
@@ -154,6 +153,13 @@ class Game:
                         self.isOver = True
                         self.screenShot = self.screen.copy()
                         continue
+                    # elif event.key == pygame.K_F5:
+                    #     self.player.bounce += 1
+                    #     self.player.range = 800
+                    #     self.player.atk = 100
+                    #     self.player.atkSpeed = 1000
+                    # elif event.key == pygame.K_F6:
+                    #     generateEnemy(self.enemySprites,self.player,config.ENEMY_DICT['test'])
 
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
@@ -173,13 +179,13 @@ class Game:
                 self.gameOver()
                 continue
             
-            # if self.isPause:
-            #     self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
-            #     if self.upgradeWin is not None:
-            #         self.upgradeWin.draw()
-            #     else:
-            #         pygame.display.flip()
-            #     continue
+            if self.isPause:
+                self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
+                if self.upgradeWin is not None:
+                    self.upgradeWin.draw()
+                else:
+                    pygame.display.flip()
+                continue
 
             if self.pauseTime is not None:
                 deltaTime = self.curTime - self.pauseTime

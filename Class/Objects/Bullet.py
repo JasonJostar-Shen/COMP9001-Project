@@ -4,8 +4,9 @@ from Class.Objects.Enemy import Enemy
 from Utils.Setting import WIDTH,HEIGHT
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,pos,target:Enemy,bounces,bounceRange):
+    def __init__(self,damage,pos,target:Enemy,bounces,bounceRange):
         super().__init__()
+        self.damage = damage
         self.image = pygame.Surface((5,5),pygame.SRCALPHA)
         pygame.draw.circle(self.image,(255,255,0),(4,4),4)
         self.rect = self.image.get_rect()

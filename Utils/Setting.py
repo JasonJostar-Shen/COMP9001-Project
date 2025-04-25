@@ -37,9 +37,20 @@ ENEMY_DICT = {
         'speedInterval':100,
         'speedIncrement':0.2,
         'score':2000
+    },
+    'test':{
+        'hp':5000,
+        'speed':1,
+        'expParam':1,
+        'url':'Assets/Images/CasaMonstro.png',
+        'hpInterval':50,
+        'hpIncrement':1000,
+        'speedInterval':100,
+        'speedIncrement':0.2,
+        'score':2000
     }
     }
-ENEMY_SPWAN_WEIGHT = [0.8,0.2,0]
+ENEMY_SPWAN_WEIGHT = [0.8,0.2,0,0]
 
 
 ENEMY_COOLDOWN = 2000

@@ -93,7 +93,8 @@ class StatusBar:
             self.font.render(f"ATK: {self.player.atk}", True, self.fontColor),
             self.font.render(f"Range: {self.player.range}", True, self.fontColor), 
             self.font.render(f"Score: {self.player.score}", True, self.fontColor),
-            self.font.render(f"Kills: {self.player.kills}", True, self.fontColor)
+            self.font.render(f"Kills: {self.player.kills}", True, self.fontColor),
+            self.font.render(f"Bounces: {self.player.bounce}", True, self.fontColor)
         ]
         for i, text in enumerate(texts):
             self.surface.blit(text, (leftTopGap[0], leftTopGap[1] + i * interval))
