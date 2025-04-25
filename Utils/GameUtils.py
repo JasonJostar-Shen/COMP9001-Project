@@ -16,7 +16,7 @@ def CalEnemyExp(initHP,expParam):
     return int(initHP*expParam)
 
 def CalEnemyHP(curKills,hp,interval,increment):
-    return hp + curKills // interval * (increment*(curKills//50 + 1))
+    return hp  * ((1 + (increment / 100)) **(curKills // interval))
 
 def CalEnemySpeed(curKills,speed,interval,increment):
     return speed + curKills // interval * increment

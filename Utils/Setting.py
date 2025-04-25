@@ -12,7 +12,7 @@ ENEMY_DICT = {
     'url':'Assets/Images/EyeLander.png',
     'hpInterval':5,
     'hpIncrement':25,
-    'speedInterval':100,
+    'speedInterval':200,
     'speedIncrement':0.25,
     'score':50
     },
@@ -23,8 +23,8 @@ ENEMY_DICT = {
     'url':'Assets/Images/Claw.png',
     'hpInterval':10,
     'hpIncrement':25,
-    'speedInterval':100,
-    'speedIncrement':0.5,
+    'speedInterval':200,
+    'speedIncrement':0.25,
     'score':100
     },
     'CasaMonstro':{
@@ -33,9 +33,9 @@ ENEMY_DICT = {
         'expParam':1,
         'url':'Assets/Images/CasaMonstro.png',
         'hpInterval':50,
-        'hpIncrement':1000,
+        'hpIncrement':200,
         'speedInterval':100,
-        'speedIncrement':0.2,
+        'speedIncrement':0,
         'score':2000
     },
     'test':{
@@ -65,7 +65,8 @@ PLAYER_LV_GAP = [100,200,500,2000,5000,10000]
 PLAYER_LV_GAP_INTERVAL = 4
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
-PLYAER_HP_SCORE = 2
+PLAYER_HP_SCORE = 2
+PLAYER_HP_INCREMENT = 100
 
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
 SOUND_FIRE_URL ="Assets/Sounds/fireOption.mp3"

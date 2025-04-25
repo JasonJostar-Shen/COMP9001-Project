@@ -33,7 +33,6 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT))
-        self.SoundMananger = SoundManager()
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
@@ -44,9 +43,11 @@ class Game:
 
     def restart(self):
         self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = self.initSprites()
+        self.SoundMananger = SoundManager()
         self.isPause = False
         self.isFast = False
         self.isOver = False
+        self.isFinal = False
         self.upgradeWin = None
         self.startTime = pygame.time.get_ticks()
         self.enemyRespondTime = self.startTime
@@ -99,6 +100,7 @@ class Game:
                         generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
                     if player.kills == 1000:
                         self.isFinal = True
+                        self.SoundMananger.finalBattle()
                         for i in range(9):
                             generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
                     generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=enemy.url)
@@ -112,7 +114,7 @@ class Game:
         title = font.render("GAME OVER!",True,(255,255,255))
         titleRect = title.get_rect()
         font = pygame.font.SysFont('arial',32)
-        score = self.player.score if self.player.hp <= 0 else self.player.score + self.player.hp * config.PLYAER_HP_SCORE
+        score = self.player.score if self.player.hp <= 0 else self.player.score + self.player.hp * config.PLAYER_HP_SCORE
         texts = [font.render(f"Your Score is {score}",True,(255,255,255)),
                  font.render("Press'R' to Restart!",True,(255,255,255))]
         titleRect.center = (self.screen.get_width()//2,self.screen.get_height()//3)
@@ -173,11 +175,11 @@ class Game:
                         self.screenShot = self.screen.copy()
                         self.SoundMananger.gameOver()
                         continue
-                    # elif event.key == pygame.K_F5:
-                    #     self.player.bounce += 1
-                    #     self.player.range = 800
-                    #     self.player.atk = 100
-                    #     self.player.atkSpeed = 1000
+                    elif event.key == pygame.K_F5:
+                        self.player.bounce += 2
+                        self.player.range = 1000
+                        self.player.atk += 999999
+                        self.player.atkSpeed = 100
                     # elif event.key == pygame.K_F6:
                     #     generateEnemy(self.enemySprites,self.player,config.ENEMY_DICT['test'])
 

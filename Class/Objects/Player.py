@@ -68,6 +68,10 @@ class Player(pygame.sprite.Sprite):
     def lvUp(self,option):
         self.exp -= GU.CalLVGap(self.lv)
         self.lv += 1
+        self.hp += 100
+        self.maxHp += 100
+        self.lifeBar.maxValue = self.maxHp
+        self.lifeBar.setValue(self.hp)
         self.expBar.maxValue = self.getLvGap()
         self.expBar.resetValue(self.exp)
         attribute = option[0]
