@@ -69,7 +69,7 @@ PLAYER_HP_SCORE = 2
 PLAYER_HP_INCREMENT = 100
 
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
-SOUND_FIRE_URL ="Assets/Sounds/fireOption.mp3"
+SOUND_FIRE_URL ="Assets/Sounds/fire.mp3"
 SOUND_HIT_ENEMY_URL = "Assets/Sounds/hit1.mp3"
 SOUND_HIT_PLAYER_URL = "Assets/Sounds/hit2.mp3"
 SOUND_LVUP_URL = "Assets/Sounds/lvup.mp3"
