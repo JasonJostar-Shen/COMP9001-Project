@@ -52,10 +52,10 @@ def GenerateEnemyConfig():
 def GetOptionText(option):
     attribute = option[0]
     value = option[1]
-    if attribute == 'ATK' or attribute == 'Range' or attribute == 'Bounce':
+    if  attribute == 'Range' or attribute == 'Bounce':
         return f'{attribute} +{value}'
     if attribute == 'AS':
         return f'{attribute} -{value}%'
-    if attribute == 'HP':
+    if attribute == 'HP' or attribute == 'ATK':
         return f'{attribute} +{value}%'
     
