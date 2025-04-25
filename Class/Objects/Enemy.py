@@ -1,7 +1,7 @@
 import pygame
 import random
 import Utils.GameUtils as GU
-from Utils.Setting import WIDTH,ENEMY_IMG_URL
+from Utils.Setting import WIDTH
 from Class.Components.ProgressBar import ProgressBar
 
 class Enemy(pygame.sprite.Sprite):

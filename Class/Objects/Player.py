@@ -5,7 +5,7 @@ from Class.Objects.Bullet import Bullet
 from Class.Components.ProgressBar import ProgressBar
 from Utils.Setting import WIDTH,HEIGHT,PLAYER_INITHP,PLAYER_AS,PLAYER_DAMAGE,PLAYER_BASE_URL,PLAYER_TURRET_URL
 
-INITPOSTION = (WIDTH // 2, HEIGHT-70)
+INITPOSTION = (WIDTH // 2, HEIGHT-50)
 
 
 class Player(pygame.sprite.Sprite):

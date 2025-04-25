@@ -2,7 +2,7 @@ import Utils.Setting as config
 import random
 
 def CalLVGap(curLV):
-    gapLv = (curLV - 1) // 3
+    gapLv = (curLV - 1) // config.PLAYER_LV_GAP_INTERVAL
     if gapLv == 0: return curLV * config.PLAYER_LV_GAP[0]
     gapLv = gapLv if gapLv < 4 else 4
     lastExpGap = 0
