@@ -4,13 +4,30 @@ FPS = 60
 WIDTH, HEIGHT = 600, 900
 STATUSWIDTH = 100
 
-ENEMY_MAX = 10
-ENEMY_COOLDOWN = 2000
-ENEMY_INITHP =100
+ENEMY_DICT = {
+    'Eyeball':{
+    'hp':100,
+    'speed':1,
+    'expParam':0.5,
+    'url':'Assets/Images/eyeball.png',
+    'hpInterval':5,
+    'hpIncrement':25,
+    'speedInterval':100,
+    'speedIncrement':1,
+    'score':50
+    }
+    }
+ENEMY_SCORE = 100
+ENEMY_INITHP = 100
 ENEMY_INITSPEED = 1
 ENEMY_EXP_PARAM = 0.5
-ENEMY_IMG_URL = 'Assets/Images/enemy.png'
+ENEMY_IMG_URL = 'Assets/Images/eyeball.png'
+
+
+ENEMY_COOLDOWN = 2000
 ENEMY_COOLDOWN_MIN = 500
+ENEMY_MAX_NUM = 10
+
 
 PLAYER_INITHP = 1000
 PLAYER_AS = 1500

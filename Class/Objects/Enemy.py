@@ -1,17 +1,18 @@
 import pygame
 import random
 import Utils.GameUtils as GU
-from Utils.Setting import WIDTH,HEIGHT,ENEMY_INITHP,ENEMY_INITSPEED,ENEMY_IMG_URL
+from Utils.Setting import WIDTH,ENEMY_IMG_URL
 from Class.Components.ProgressBar import ProgressBar
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,hp,speed):
+    def __init__(self,hp,speed,url,score):
         self.hp = hp
         self.speed = speed
         self.exp = GU.CalEnemyExp(self.hp)
+        self.score = score
         super().__init__()
 
-        self.image = pygame.image.load(ENEMY_IMG_URL).convert_alpha()
+        self.image = pygame.image.load(url).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(self.rect.width, WIDTH - self.rect.width),-self.rect.height)
         # self.mask = pygame.mask.from_surface(self.image)

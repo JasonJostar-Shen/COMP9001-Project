@@ -15,11 +15,11 @@ def CalLVGap(curLV):
 def CalEnemyExp(initHP):
     return int(initHP*config.ENEMY_EXP_PARAM)
 
-def CalEnemyHP(curKills):
-    return config.ENEMY_INITHP + curKills // 5 * 25
+def CalEnemyHP(curKills,hp,interval,increment):
+    return hp + curKills // interval * increment
 
-def CalEnemySpeed(curKills):
-    return config.ENEMY_INITSPEED + curKills // 80 * 1
+def CalEnemySpeed(curKills,speed,interval,increment):
+    return speed + curKills // interval * increment
 
 def CalEnemyCD(curKills):
     cd = config.ENEMY_COOLDOWN - curKills//10 * 100
@@ -27,7 +27,7 @@ def CalEnemyCD(curKills):
     return cd
     
 def CalEnemyMax(curKills):
-    return config.ENEMY_MAX + curKills//10
+    return config.ENEMY_MAX_NUM + curKills//10
 
 def GenerateUpgradeOption(num):
     upgradeDict = config.UPGRADE_DICT

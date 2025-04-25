@@ -28,9 +28,10 @@ def initSprites():
     return player,wall,sprites,enemySprites,bulletsSprites,effectSprites,statusBar
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player):
-    hp = GU.CalEnemyHP(player.kills)
-    speed = GU.CalEnemySpeed(player.kills)
-    enemy = Enemy(hp,speed)
+    enemyConfig = config.ENEMY_DICT['Eyeball']
+    hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
+    speed = GU.CalEnemyHP(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
+    enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'])
     # print(hp,speed)
     sprites.add(enemy,layer = 0)
     
@@ -55,7 +56,7 @@ def collsionEvent(player:Player,wall,enemies,bullets,effects):
             pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
             generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
             if enemy.isDead():
-                player.gainExp(enemy.exp)
+                player.gainExp(enemy.exp,enemy.score)
                 generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=config.ENEMY_IMG_URL)
                 enemy.kill()
                 
@@ -140,8 +141,8 @@ class Game:
             self.effectSprites.update()
 
             self.screen.blit(self.bg, (0, 0))
-            self.player.aimTarget(self.screen)
             self.sprites.draw(self.screen)
+            self.player.aimTarget(self.screen)
             self.bulletSprites.draw(self.screen)
             # self.enemySprites.draw(self.screen)
             for enemy in self.enemySprites:
