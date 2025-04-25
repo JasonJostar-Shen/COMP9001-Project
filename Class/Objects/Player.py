@@ -27,8 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.surface = pygame.Surface((50,50),pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
         self.rect.center = INITPOSTION
-        self.lifeBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-30),self.maxHp,30,title="HP")
-        self.expBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-10),self.getLvGap(),30,False,title="EXP"
+        self.lifeBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-30),self.maxHp,15,title="HP")
+        self.expBar = ProgressBar(WIDTH,20,(WIDTH/2,HEIGHT-10),self.getLvGap(),15,False,title="EXP"
                                   ,fillColor=(100, 150, 230),bgColor=(211, 211, 211))
 
     def draw(self,screen):

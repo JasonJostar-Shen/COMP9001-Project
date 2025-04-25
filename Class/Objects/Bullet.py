@@ -27,10 +27,10 @@ class Bullet(pygame.sprite.Sprite):
             distance = 1
         self.velocity = (dx/distance * self.speed, dy/distance * self.speed)
 
-    def update(self):
+    def update(self,isFast):
         if self.target.alive(): self.calVelocity()
-        self.rect.x += self.velocity[0]
-        self.rect.y += self.velocity[1]
+        self.rect.x += self.velocity[0]*2 if isFast else self.velocity[0]
+        self.rect.y += self.velocity[1]*2 if isFast else self.velocity[1]
         if (self.rect.right < 0 or self.rect.left > WIDTH
             or self.rect.bottom < 0 or self.rect.top > HEIGHT):
             self.kill()

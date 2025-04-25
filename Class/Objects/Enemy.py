@@ -10,16 +10,19 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed
         self.exp = GU.CalEnemyExp(self.hp)
         self.score = score
+        self.url = url
         super().__init__()
 
         self.image = pygame.image.load(url).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(self.rect.width, WIDTH - self.rect.width),-self.rect.height)
+        self.y = self.rect.y
         # self.mask = pygame.mask.from_surface(self.image)
         self.lifeBar = ProgressBar(self.image.get_width(),6,self.getLifeBarCenter(),self.hp,5)
 
-    def update(self):
-        self.rect.y += self.speed
+    def update(self,isFast):
+        self.y += self.speed * 2 if isFast else self.speed
+        self.rect.y = int(self.y)
         alpha = self.image.get_alpha()
         if alpha != 255: self.image.set_alpha(alpha+5)
         self.lifeBar.setValue(self.hp)

@@ -27,8 +27,7 @@ def initSprites():
     statusBar = StatusBar(player)
     return player,wall,sprites,enemySprites,bulletsSprites,effectSprites,statusBar
 
-def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player):
-    enemyConfig = config.ENEMY_DICT['Eyeball']
+def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig):
     hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
     speed = GU.CalEnemyHP(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
     enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'])
@@ -57,7 +56,9 @@ def collsionEvent(player:Player,wall,enemies,bullets,effects):
             generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
             if enemy.isDead():
                 player.gainExp(enemy.exp,enemy.score)
-                generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=config.ENEMY_IMG_URL)
+                if player.kills % 50 == 0:
+                    generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
+                generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=enemy.url)
                 enemy.kill()
                 
 class Game:
@@ -73,6 +74,7 @@ class Game:
     def restart(self):
         self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = initSprites()
         self.isPause = False
+        self.isFast = False
         self.upgradeWin = None
         self.startTime = pygame.time.get_ticks()
         self.enemyRespondTime = self.startTime
@@ -96,6 +98,8 @@ class Game:
                         self.isPause = not self.isPause
                         if self.isPause:
                             self.pauseTime = curTime
+                    elif event.key == pygame.K_f:
+                        self.isFast = not self.isFast
 
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
@@ -123,21 +127,23 @@ class Game:
 
             curEnemy = len(self.enemySprites)
             enemyMax = GU.CalEnemyMax(self.player.kills)
-            enemyCD = GU.CalEnemyCD(self.player.kills)
+            enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
 
             if curEnemy < enemyMax and (curTime - self.enemyRespondTime) >= enemyCD:
-                generateEnemy(self.enemySprites,self.player)
+                enemyConfig = config.ENEMY_DICT['EyeLander']
+                generateEnemy(self.enemySprites,self.player,enemyConfig)
                 self.enemyRespondTime = curTime
 
-            if curTime - self.playerFireTime >= self.player.atkSpeed:
+            atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
+            if curTime - self.playerFireTime >= atkSpeed:
                 self.playerFireTime = curTime
                 self.player.shoot(self.bulletSprites)
 
             collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
             self.player.findTarget(self.enemySprites)
             self.player.update()
-            self.bulletSprites.update()
-            self.enemySprites.update()
+            self.bulletSprites.update(self.isFast)
+            self.enemySprites.update(self.isFast)
             self.effectSprites.update()
 
             self.screen.blit(self.bg, (0, 0))

@@ -5,16 +5,27 @@ WIDTH, HEIGHT = 600, 900
 STATUSWIDTH = 100
 
 ENEMY_DICT = {
-    'Eyeball':{
+    'EyeLander':{
     'hp':100,
-    'speed':1,
+    'speed':0.75,
     'expParam':0.5,
-    'url':'Assets/Images/eyeball.png',
+    'url':'Assets/Images/EyeLander.png',
     'hpInterval':5,
     'hpIncrement':25,
     'speedInterval':100,
     'speedIncrement':1,
     'score':50
+    },
+    'CasaMonstro':{
+        'hp':1000,
+        'speed':0.2,
+        'expParam':1,
+        'url':'Assets/Images/CasaMonstro.png',
+        'hpInterval':50,
+        'hpIncrement':1000,
+        'speedInterval':100,
+        'speedIncrement':0,
+        'score':2000
     }
     }
 ENEMY_SCORE = 100
