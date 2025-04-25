@@ -179,6 +179,7 @@ class Game:
                 self.pauseTime = self.curTime
                 self.options = GU.GenerateUpgradeOption(3)
                 self.upgradeWin = UpgradeWindow(self.screen, self.options)
+                self.SoundMananger.lvUp()
                 
             
             if self.isOver:
@@ -238,7 +239,9 @@ class Game:
             if self.upgradeWin is not None: 
                     self.upgradeWin.draw()
             self.isOver = not self.player.isAlive()
-            if self.isOver: self.screenShot = self.screen.copy()
+            if self.isOver: 
+                self.screenShot = self.screen.copy()
+                
             pygame.display.flip()
 
         pygame.quit()
