@@ -21,7 +21,6 @@ def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig
     hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
     speed = GU.CalEnemyHP(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
     enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'],enemyConfig['expParam'])
-    # print(hp,speed)
     sprites.add(enemy,layer = 0)
     
 def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,fontSize=14,fontColor=(255,255,255),url=None):
