@@ -74,6 +74,7 @@ class Game:
         if EnenmyHitWall:
             for enemy in EnenmyHitWall:
                 player.takenDamage(enemy.hp)
+                self.SoundMananger.hitPlayer()
                 generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
         
         for enemy in enemies:
