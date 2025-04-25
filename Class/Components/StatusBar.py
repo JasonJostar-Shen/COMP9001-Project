@@ -25,7 +25,7 @@ class StatusBar:
         total_buttons = 4
         start_y = HEIGHT - (button_height * total_buttons + button_spacing * (total_buttons - 1)) - 5
         
-        labels = ['Q', 'R', 'F', 'P']
+        labels = ['Pasue(P)', 'Fast(F)', 'Restart(R)', 'Quit(ESC)']
         for i in range(total_buttons):
             y = start_y + i * (button_height + button_spacing)
             btn = Button(
@@ -52,13 +52,13 @@ class StatusBar:
         for btn in self.buttons:
             btn.update(local_pos, mouse_pressed)
             if btn.pressed:
-                if btn.text == 'P':
+                if btn.text == 'Pasue(P)':
                     self.onPause()
-                elif btn.text == 'F':
+                elif btn.text == 'Fast(F)':
                     self.onFast()
-                elif btn.text == 'R':
+                elif btn.text == 'Restart(R)':
                     self.onRestart()
-                elif btn.text == 'Q':
+                elif btn.text == 'Quit(ESC)':
                     self.onQuit()
                 btn.selected = not btn.selected
             btn.draw(self.surface)

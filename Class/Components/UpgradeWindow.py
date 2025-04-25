@@ -56,5 +56,5 @@ class UpgradeWindow:
         for i, btn in enumerate(self.buttons):
             if btn.isClicked(event):
                 self.selected = i
-                return i
+                return self.options[i]
         return None

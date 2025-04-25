@@ -139,3 +139,6 @@ class Player(pygame.sprite.Sprite):
         self.lifeBar.update()
         self.expBar.update()
     
+    def isAlive(self):
+        return self.hp > 0
+    

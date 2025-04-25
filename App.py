@@ -59,12 +59,14 @@ class Game:
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
         self.isQuit = False
+        self.isOver = False
         self.restart()
 
     def restart(self):
         self.player, self.wall, self.sprites, self.enemySprites, self.bulletSprites, self.effectSprites, self.statusBar = self.initSprites()
         self.isPause = False
         self.isFast = False
+        self.isOver = False
         self.upgradeWin = None
         self.startTime = pygame.time.get_ticks()
         self.enemyRespondTime = self.startTime
@@ -87,6 +89,28 @@ class Game:
             onQuit=self.quitGame
         )
         return player, wall, sprites, enemySprites, bulletsSprites, effectSprites, statusBar
+    
+    def gameOver(self):
+        screenShot = self.screen.copy()
+        overlay = pygame.Surface(self.screen.get_size(),pygame.SRCALPHA)
+        overlay.fill((0,0,0))
+        overlay.set_alpha(180)
+        font = pygame.font.SysFont('arial',48)
+        title = font.render("GAME OVER!",True,(255,255,255))
+        titleRect = title.get_rect()
+        font = pygame.font.SysFont('arial',32)
+        score = self.player.score if self.player.hp <= 0 else self.player.score + self.player.hp * config.PLYAER_HP_SCORE
+        texts = [font.render(f"Your Score is {score}",True,(255,255,255)),
+                 font.render("Press'R' to Restart!",True,(255,255,255))]
+        titleRect.center = (self.screen.get_width()//2,self.screen.get_height()//3)
+        self.screen.blit(screenShot,(0,0))
+        self.screen.blit(overlay,(0,0))
+        self.screen.blit(title,titleRect)
+        for i, text in enumerate(texts):
+            textRect = text.get_rect()
+            textRect.center = (self.screen.get_width()//2, self.screen.get_height()//2 + i * 50)
+            self.screen.blit(text,textRect)
+        pygame.display.flip()
     
     def togglePasue(self):
         self.isPause = not self.isPause
@@ -118,13 +142,19 @@ class Game:
                         # if self.isPause:
                         #     self.pauseTime = self.curTime
                         self.togglePasue()
+                        self.statusBar.buttons[0].selected  = self.isPause
+                        
                     elif event.key == pygame.K_f:
                         self.toggleFast()
+                        self.statusBar.buttons[1].selected = self.isFast
+                    elif event.key == pygame.K_c:
+                        self.isOver = True
+                        continue
 
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
                     if result is not None:
-                        self.player.lvUp(self.options[result])
+                        self.player.lvUp(result)
                         self.upgradeWin = None
                         self.isPause = False
 
@@ -136,9 +166,15 @@ class Game:
                 
             self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
             
+            if self.isOver:
+                self.gameOver()
+                continue
+            
             if self.isPause:
                 if self.upgradeWin is not None:
                     self.upgradeWin.draw()
+                else:
+                    pygame.display.flip()
                 continue
 
             if self.pauseTime is not None:
@@ -178,7 +214,7 @@ class Game:
             self.effectSprites.draw(self.screen)
             self.player.draw(self.screen)
             # self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
-
+            self.isOver = not self.player.isAlive()
             pygame.display.flip()
 
         pygame.quit()

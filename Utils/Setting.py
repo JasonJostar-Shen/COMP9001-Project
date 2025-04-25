@@ -13,7 +13,7 @@ ENEMY_DICT = {
     'hpInterval':5,
     'hpIncrement':25,
     'speedInterval':100,
-    'speedIncrement':1,
+    'speedIncrement':0.5,
     'score':50
     },
     'CasaMonstro':{
@@ -49,6 +49,7 @@ PLAYER_UPGRADE_RANG = 50
 PLAYER_UPGRADE_DAMAGE = 25
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
+PLYAER_HP_SCORE = 2
 
 UPGRADE_DICT = {'ATK':[25,50,100],'Range':[50,100,200],'AS':[15,20,50],'HP':[25,50,100]}
 UPGRADE_WEIGHT_KEY = [0.4,0.1,0.4,0.1]
