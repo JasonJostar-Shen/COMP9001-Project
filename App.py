@@ -95,7 +95,6 @@ class Game:
         return player, wall, sprites, enemySprites, bulletsSprites, effectSprites, statusBar
     
     def gameOver(self):
-        screenShot = self.screen.copy()
         overlay = pygame.Surface(self.screen.get_size(),pygame.SRCALPHA)
         overlay.fill((0,0,0))
         overlay.set_alpha(180)
@@ -107,7 +106,7 @@ class Game:
         texts = [font.render(f"Your Score is {score}",True,(255,255,255)),
                  font.render("Press'R' to Restart!",True,(255,255,255))]
         titleRect.center = (self.screen.get_width()//2,self.screen.get_height()//3)
-        self.screen.blit(screenShot,(0,0))
+        self.screen.blit(self.screenShot,(0,0))
         self.screen.blit(overlay,(0,0))
         self.screen.blit(title,titleRect)
         for i, text in enumerate(texts):
@@ -153,6 +152,7 @@ class Game:
                         self.statusBar.buttons[1].selected = self.isFast
                     elif event.key == pygame.K_c:
                         self.isOver = True
+                        self.screenShot = self.screen.copy()
                         continue
 
                 if self.upgradeWin is not None:
@@ -168,18 +168,18 @@ class Game:
                 self.options = GU.GenerateUpgradeOption(3)
                 self.upgradeWin = UpgradeWindow(self.screen, self.options)
                 
-            self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
             
             if self.isOver:
                 self.gameOver()
                 continue
             
-            if self.isPause:
-                if self.upgradeWin is not None:
-                    self.upgradeWin.draw()
-                else:
-                    pygame.display.flip()
-                continue
+            # if self.isPause:
+            #     self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
+            #     if self.upgradeWin is not None:
+            #         self.upgradeWin.draw()
+            #     else:
+            #         pygame.display.flip()
+            #     continue
 
             if self.pauseTime is not None:
                 deltaTime = self.curTime - self.pauseTime
@@ -187,38 +187,45 @@ class Game:
                 self.playerFireTime += deltaTime
                 self.pauseTime = None
 
-            curEnemy = len(self.enemySprites)
-            enemyMax = GU.CalEnemyMax(self.player.kills)
-            enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
+            
+            
+            if not self.isPause:
+                curEnemy = len(self.enemySprites)
+                enemyMax = GU.CalEnemyMax(self.player.kills)
+                enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
 
-            if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
-                enemyConfig = GU.GenerateEnemyConfig()
-                generateEnemy(self.enemySprites,self.player,enemyConfig)
-                self.enemyRespondTime = self.curTime
+                if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
+                    enemyConfig = GU.GenerateEnemyConfig()
+                    generateEnemy(self.enemySprites,self.player,enemyConfig)
+                    self.enemyRespondTime = self.curTime
 
-            atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
-            if self.curTime - self.playerFireTime >= atkSpeed:
-                self.playerFireTime = self.curTime
-                self.player.shoot(self.bulletSprites)
+                atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
+                if self.curTime - self.playerFireTime >= atkSpeed:
+                    self.playerFireTime = self.curTime
+                    self.player.shoot(self.bulletSprites)
 
-            collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
-            self.player.findTarget(self.enemySprites)
-            self.player.update()
-            self.bulletSprites.update(self.isFast)
-            self.enemySprites.update(self.isFast)
-            self.effectSprites.update()
-
+                collsionEvent(self.player, self.wall, self.enemySprites, self.bulletSprites,self.effectSprites)
+                self.player.findTarget(self.enemySprites)
+                self.player.update()
+                self.bulletSprites.update(self.isFast)
+                self.enemySprites.update(self.isFast)
+                self.effectSprites.update()
+            
+            self.screen.fill((0,0,0))
             self.screen.blit(self.bg, (0, 0))
             self.sprites.draw(self.screen)
-            self.player.aimTarget(self.screen)
+            # self.player.aimTarget(self.screen)
             self.bulletSprites.draw(self.screen)
-            # self.enemySprites.draw(self.screen)
+                    
             for enemy in self.enemySprites:
                 enemy.draw(self.screen)
             self.effectSprites.draw(self.screen)
             self.player.draw(self.screen)
-            # self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
+            self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
+            if self.upgradeWin is not None: 
+                    self.upgradeWin.draw()
             self.isOver = not self.player.isAlive()
+            if self.isOver: self.screenShot = self.screen.copy()
             pygame.display.flip()
 
         pygame.quit()

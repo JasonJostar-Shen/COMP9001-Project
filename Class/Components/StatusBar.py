@@ -1,48 +1,64 @@
 import pygame
 from Utils.Setting import STATUSWIDTH, HEIGHT, WIDTH
 from Class.Objects.Player import Player
-from Class.Components.Button import Button  
+from Class.Components.Button import Button
+import math
 
 class StatusBar:
     def __init__(self, player: Player, onPause, onFast, onRestart, onQuit):
         self.player = player
         self.width = STATUSWIDTH
-        self.color = (150, 150, 0) 
-        self.front = pygame.font.SysFont(None, 20)
+        self.color = (80, 80, 80) 
+        self.font = pygame.font.SysFont(None, 20)
+        self.fontColor = (42, 191, 206)
         self.surface = pygame.Surface((self.width, HEIGHT), pygame.SRCALPHA)
-        self.surface.set_alpha(200)
+        # self.surface.set_alpha(255)
         self.rect = self.surface.get_rect(topleft=(WIDTH, 0))
-        
+        self.borderColor = (42, 191, 206)
         self.onPause = onPause
         self.onFast = onFast
         self.onRestart = onRestart
         self.onQuit = onQuit
+        self.breathAlpha = 0     
+        self.breath_speed = 2   
+        self.breath_direction = 1
         
         self.buttons = []
-        button_width = self.width - 10
+        button_width = self.width - 20
         button_height = 30
         button_spacing = 10
         total_buttons = 4
-        start_y = HEIGHT - (button_height * total_buttons + button_spacing * (total_buttons - 1)) - 5
+        start_y = HEIGHT - (button_height * total_buttons + button_spacing * (total_buttons - 1)) - 10
         
         labels = ['Pasue(P)', 'Fast(F)', 'Restart(R)', 'Quit(ESC)']
         for i in range(total_buttons):
             y = start_y + i * (button_height + button_spacing)
             btn = Button(
-                x=5, y=y,
+                x=10, y=y,
                 width=button_width,
                 height=button_height,
                 text=labels[i],
-                font=self.front,
+                font=self.font,
                 colorIdle=self.color,          
-                colorHover=(200, 200, 0),      
-                colorPressed=(100, 100, 0),    
-                colorBorder=(0, 0, 0)
+                colorHover=(100, 100, 100),      
+                colorPressed=(38, 38, 38),    
+                colorBorder=self.borderColor,
+                colorFont=self.borderColor
             )
             self.buttons.append(btn)
     
     def update(self, screen, mouse_pos, mouse_pressed):
-        self.surface.fill(self.color)
+        self.breathAlpha += self.breath_direction * self.breath_speed
+        if self.breathAlpha >= 255 or self.breathAlpha <= 0:
+            self.breath_direction *= -1
+        self.breathAlpha = max(0, min(255, self.breathAlpha))
+        
+        breathBorderColor = (*self.borderColor, int(self.breathAlpha))
+        
+        # self.surface.fill((0, 0, 0, 0))
+        self.surface.fill((*self.color, 255))
+        pygame.draw.rect(self.surface, breathBorderColor, self.surface.get_rect(), width=5)
+        
         self.updateText()
         
         local_x = mouse_pos[0] - self.rect.x
@@ -64,17 +80,20 @@ class StatusBar:
             btn.draw(self.surface)
         
         screen.blit(self.surface, self.rect.topleft)
+        
+        
+        # pygame.draw.rect(self.surface, (), self.surface.get_rect(), 5)
     
     def updateText(self):
-        leftTopGap = (5, 10)
+        leftTopGap = (10, 10)
         interval = 30
         texts = [
-            self.front.render(f"LV: {self.player.lv}", True, (0,0,0)),
-            self.front.render(f"AS: {self.player.atkSpeed/1000.0:.1f}s", True, (0,0,0)),
-            self.front.render(f"ATK: {self.player.atk}", True, (0,0,0)),
-            self.front.render(f"Range: {self.player.range}", True, (0,0,0)), 
-            self.front.render(f"Score: {self.player.score}", True, (0,0,0)),
-            self.front.render(f"Kills: {self.player.kills}", True, (0,0,0))
+            self.font.render(f"LV: {self.player.lv}", True, self.fontColor),
+            self.font.render(f"AS: {self.player.atkSpeed/1000.0:.1f}s", True, self.fontColor),
+            self.font.render(f"ATK: {self.player.atk}", True, self.fontColor),
+            self.font.render(f"Range: {self.player.range}", True, self.fontColor), 
+            self.font.render(f"Score: {self.player.score}", True, self.fontColor),
+            self.font.render(f"Kills: {self.player.kills}", True, self.fontColor)
         ]
         for i, text in enumerate(texts):
             self.surface.blit(text, (leftTopGap[0], leftTopGap[1] + i * interval))

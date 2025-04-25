@@ -5,7 +5,8 @@ class Button:
                  colorIdle=(255, 255, 255), 
                  colorHover=(200, 200, 200), 
                  colorPressed=(160, 160, 160),
-                 colorBorder=(0,0,0)):
+                 colorBorder=(0,0,0),
+                 colorFont=(0,0,0)):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.font = font
@@ -14,6 +15,7 @@ class Button:
         self.colorHover = colorHover
         self.colorPressed = colorPressed
         self.colorBorder = colorBorder
+        self.colorFont = colorFont
         self.hover = False
         self.pressed = False
         self.selected = False
@@ -31,7 +33,7 @@ class Button:
 
         pygame.draw.rect(surface, color, self.rect, border_radius=12)
         pygame.draw.rect(surface, self.colorBorder, self.rect, width=self.boderWdith, border_radius=12)
-        text = self.font.render(self.text, True, (0, 0, 0))
+        text = self.font.render(self.text, True, self.colorFont)
         textRect = text.get_rect(center=self.rect.center)
         surface.blit(text, textRect)
 

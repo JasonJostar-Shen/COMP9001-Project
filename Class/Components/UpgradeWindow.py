@@ -5,7 +5,7 @@ import Utils.GameUtils as GU
 
 class UpgradeWindow:
     def __init__(self,screen,options):
-        self.bg = screen.copy()
+        # self.bg = screen.copy()
         self.screen = screen
         self.overlay = pygame.Surface(screen.get_size(),pygame.SRCALPHA)
         self.selected = -1
@@ -40,7 +40,7 @@ class UpgradeWindow:
         self.buttons.append(self.rerollBtn)
             
     def draw(self):
-        self.screen.blit(self.bg,(0,0))
+        # self.screen.blit(self.bg,(0,0))
         self.screen.blit(self.overlay,(0,0))
         title = self.titleFont.render("Upgrade!",True,(255,255,255))
         titleRect = title.get_rect(center=(self.screen.get_width() // 2,self.screen.get_height()//3))
