@@ -10,9 +10,9 @@ ENEMY_DICT = {
     'speed':0.5,
     'expParam':0.5,
     'url':'Assets/Images/EyeLander.png',
-    'hpInterval':5,
-    'hpIncrement':25,
-    'speedInterval':200,
+    'hpInterval':10,
+    'hpIncrement':50,
+    'speedInterval':250,
     'speedIncrement':0.25,
     'score':50
     },
@@ -23,7 +23,7 @@ ENEMY_DICT = {
     'url':'Assets/Images/Claw.png',
     'hpInterval':10,
     'hpIncrement':25,
-    'speedInterval':200,
+    'speedInterval':250,
     'speedIncrement':0.25,
     'score':100
     },
@@ -61,12 +61,13 @@ ENEMY_MAX_NUM = 5
 PLAYER_INITHP = 2000
 PLAYER_AS = 2000
 PLAYER_DAMAGE = 50
-PLAYER_LV_GAP = [100,200,500,2000,5000,10000]
-PLAYER_LV_GAP_INTERVAL = 4
+PLAYER_LV_GAP = [100,200,1000,5000,10000,100000]
+PLAYER_LV_GAP_INTERVAL = 5
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
 PLAYER_HP_SCORE = 2
-PLAYER_HP_INCREMENT = 100
+PLAYER_HP_INCREMENT = 25
+PLAYER_HP_INTERVAL = 5
 
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
 SOUND_FIRE_URL ="Assets/Sounds/fire.mp3"

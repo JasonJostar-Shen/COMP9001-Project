@@ -49,7 +49,7 @@ class ProgressBar:
 
     def setValue(self,value):
         self.value = value
-        self.delta = (self.value - self.curValue)//self.frame
+        self.delta = int((self.value - self.curValue)//self.frame)
     
     def draw(self,screen):
         bgRect = pygame.Rect(0,0,self.width,self.height)

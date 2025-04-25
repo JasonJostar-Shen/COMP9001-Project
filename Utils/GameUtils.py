@@ -59,3 +59,6 @@ def GetOptionText(option):
     if attribute == 'HP' or attribute == 'ATK':
         return f'{attribute} +{value}%'
     
+def CalPlayerHp(curLv):
+    return config.PLAYER_INITHP * (1+config.PLAYER_HP_INTERVAL/100) ** ((curLv - 1) // config.PLAYER_HP_INTERVAL)
+    
