@@ -58,7 +58,8 @@ class Player(pygame.sprite.Sprite):
         self.exp += exp
         self.kills += 1
         self.score += score
-        print(f"Player gained Exp!: {self.exp}")
+        self.expBar.setValue(self.exp)
+        # print(f"Player gained Exp!: {self.exp}")
             
     def isUpgrade(self):
         return self.exp >= GU.CalLVGap(self.lv)
@@ -67,7 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.exp -= GU.CalLVGap(self.lv)
         self.lv += 1
         self.expBar.maxValue = self.getLvGap()
-        self.expBar.setValue(self.exp)
+        self.expBar.resetValue(self.exp)
         attribute = option[0]
         value = option[1]
         if attribute == 'AS':
@@ -79,6 +80,7 @@ class Player(pygame.sprite.Sprite):
         elif attribute == 'HP':
             self.hp += self.maxHp * value/100
             self.hp = self.hp if self.hp < self.maxHp else self.maxHp
+            self.lifeBar.setValue(self.hp)
         
     
     def findTarget(self,group):
@@ -119,7 +121,8 @@ class Player(pygame.sprite.Sprite):
 
     def takenDamage(self,damage:int):
         self.hp -= damage
-        print(f"Hurt! Hp:{self.hp}")
+        self.lifeBar.setValue(self.hp)
+        # print(f"Hurt! Hp:{self.hp}")
     
     def shoot(self,bulletGroup):
         if self.target:
@@ -133,6 +136,6 @@ class Player(pygame.sprite.Sprite):
         return GU.CalLVGap(self.lv)
     
     def update(self):
-        self.lifeBar.update(self.hp)
-        self.expBar.update(self.exp)
+        self.lifeBar.update()
+        self.expBar.update()
     

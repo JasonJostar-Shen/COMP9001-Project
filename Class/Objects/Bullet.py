@@ -11,7 +11,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.target = target
-        self.speed = 10
+        self.speed = 15
         dx = target.rect.center[0] - pos[0]
         dy = target.rect.center[1] - pos[1]
         distance = math.hypot(dx,dy)

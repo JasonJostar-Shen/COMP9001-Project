@@ -18,21 +18,38 @@ class ProgressBar:
         self.fontColor = fontColor
         self.curValue = self.value
         self.frame = frame
+        self.delta = 0
         
             
-    def update(self,value,pos=None):
-        self.value = value
-        if self.curValue > self.value:
-            self.curValue -= (self.curValue - self.value)//self.frame
-            self.curValue = self.curValue if self.curValue > self.value else self.value
-        elif self.curValue < self.value:
-            self.curValue += (self.value - self.curValue)//self.frame
-            self.curValue = self.curValue if self.curValue < self.value else self.value
+    def update(self,pos=None):
+        if self.delta < 0:
+            self.curValue = self.curValue + self.delta if (self.curValue + self.delta) > self.value else self.value
+        else:
+            self.curValue = self.curValue + self.delta if (self.curValue + self.delta) < self.value else self.value
+        # self.value = value
+        # self.frame -= 1
+        # if self.frame == 0: self.frame = self.duration
+        # if self.curValue > self.value:
+        #     delta = (self.curValue - self.value)//self.frame
+        #     delta = delta if delta != 0 else 1
+        #     self.curValue -= delta
+        #     self.curValue = self.curValue if self.curValue > self.value else self.value
+        # elif self.curValue < self.value:
+        #     delta = (self.value - self.curValue)//self.frame
+        #     delta = delta if delta != 0 else 1
+        #     self.curValue += delta
+        #     self.curValue = self.curValue if self.curValue < self.value else self.value
+        
+
         if pos: self.center = pos
         
-    def setValue(self,value):
+    def resetValue(self,value):
         self.value = value
         self.curValue = value
+
+    def setValue(self,value):
+        self.value = value
+        self.delta = (self.value - self.curValue)//self.frame
     
     def draw(self,screen):
         bgRect = pygame.Rect(0,0,self.width,self.height)
@@ -41,7 +58,6 @@ class ProgressBar:
         fillRect.midleft = bgRect.midleft
         outlineRect = pygame.Rect(0,0,self.width,self.height)
         outlineRect.center = bgRect.center
-        
         pygame.draw.rect(screen,self.bgColor,bgRect)
         pygame.draw.rect(screen,self.fillColor,fillRect)
         pygame.draw.rect(screen,self.outlineColor,outlineRect,1)

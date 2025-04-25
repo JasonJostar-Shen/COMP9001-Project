@@ -22,7 +22,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.speed
         alpha = self.image.get_alpha()
         if alpha != 255: self.image.set_alpha(alpha+5)
-        self.lifeBar.update(self.hp,self.getLifeBarCenter())
+        self.lifeBar.setValue(self.hp)
+        self.lifeBar.update(self.getLifeBarCenter())
     
     def takenDamage(self,damage:int):
         self.hp -= damage
