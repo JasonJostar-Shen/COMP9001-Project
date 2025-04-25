@@ -15,7 +15,8 @@ class UpgradeWindow:
         self.optionFont = pygame.font.SysFont('arial',20)
         self.buttons = list[Button]
         self.options = options
-        self.optionColors = [(144, 238, 144),(135, 206, 250),(160, 32, 240)]
+        self.reroll = 3
+        self.optionColors = [(144, 238, 144),(135, 206, 250),(160, 32, 240),(255, 215, 0)]
         self.initOpitons()
     
     
@@ -28,8 +29,15 @@ class UpgradeWindow:
         for i, option in enumerate(self.options):
             x = initX + i * (boxWidth + interval)
             text = GU.GetOptionText(option)
-            btn = Button(x,y,boxWidth,boxHeight,text,self.optionFont,colorBorder=self.optionColors[option[2]])
+            btn = Button(x,y,boxWidth,boxHeight,text,self.optionFont,borderWdith=10,colorBorder=self.optionColors[option[2]])
             self.buttons.append(btn)
+        self.rerollBtn = Button(initX + 1*(boxWidth + interval),
+                                y+boxHeight*2,
+                                boxWidth,
+                                boxHeight,
+                                f'Reroll({self.reroll})',
+                                self.optionFont)
+        self.buttons.append(self.rerollBtn)
             
     def draw(self):
         self.screen.blit(self.bg,(0,0))
@@ -43,6 +51,7 @@ class UpgradeWindow:
         for btn in self.buttons:
             btn.update(mousePos,mousePressed)
             btn.draw(self.screen)
+        
         # for i,rect in enumerate(self.buttons):
         #     hover = rect.collidepoint(mousePos)
         #     color = (200, 200, 200) if hover else (255, 255, 255)
@@ -56,5 +65,11 @@ class UpgradeWindow:
         for i, btn in enumerate(self.buttons):
             if btn.isClicked(event):
                 self.selected = i
-                return self.options[i]
+                if i != 3: return self.options[i]
+        if self.rerollBtn.isClicked(event):
+            if self.reroll > 0:
+                self.reroll -= 1
+                self.options = GU.GenerateUpgradeOption(3)
+                self.initOpitons()
+            self.rerollBtn.isGray = self.reroll == 0
         return None

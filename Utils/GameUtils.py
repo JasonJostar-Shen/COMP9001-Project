@@ -34,16 +34,20 @@ def GenerateUpgradeOption(num):
     options = []
     for i in range(num):
         key = random.choices(list(upgradeDict.keys()),weights=config.UPGRADE_WEIGHT_KEY,k=1)[0]
-        valueList = upgradeDict[key]
-        value = random.choices(valueList,weights=config.UPGRADE_WEIGHT_VALUE,k=1)[0]
-        index = valueList.index(value)
+        if key == 'Bounce':
+            value = 1
+            index = 3
+        else:
+            valueList = upgradeDict[key]
+            value = random.choices(valueList,weights=config.UPGRADE_WEIGHT_VALUE,k=1)[0]
+            index = valueList.index(value)
         options.append((key,value,index))
     return options
 
 def GetOptionText(option):
     attribute = option[0]
     value = option[1]
-    if attribute == 'ATK' or attribute == 'Range':
+    if attribute == 'ATK' or attribute == 'Range' or attribute == 'Bounce':
         return f'{attribute} +{value}'
     if attribute == 'AS':
         return f'{attribute} -{value}%'

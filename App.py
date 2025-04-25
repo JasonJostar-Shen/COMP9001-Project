@@ -24,26 +24,31 @@ def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig
     # print(hp,speed)
     sprites.add(enemy,layer = 0)
     
-def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,fontSize=14,url=None):
-    group.add(Effect(type,pos,frame,text,fontSize,url))
+def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,fontSize=14,fontColor=(255,255,255),url=None):
+    group.add(Effect(type,pos,frame,text,fontSize,fontColor,url))
 
 def collsionEvent(player:Player,wall,enemies,bullets,effects):
     EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
     if EnenmyHitWall:
         for enemy in EnenmyHitWall:
             player.takenDamage(enemy.hp)
+            generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
             for bullet in bullets:
                 if bullet.target == enemy:
                     bullet.kill()
     
     for enemy in enemies:
-        bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=True)
+        bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=False)
         if bulletHitEnenmy:
             enemy.takenDamage(player.atk)
             text = f'-{player.atk}'
             textsize = 14
             pos = (enemy.rect.midtop[0],enemy.rect.midtop[1] - textsize//2)
             generateEffect(effects,'FadeOut',pos,45,text=text,fontSize=textsize)
+            for bullet in bulletHitEnenmy:
+                if not bullet.bounce(enemies):
+                    bullet.kill()
+            
             if enemy.isDead():
                 player.gainExp(enemy.exp,enemy.score)
                 if player.kills % 50 == 0:

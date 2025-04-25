@@ -4,7 +4,7 @@ from Class.Objects.Enemy import Enemy
 from Utils.Setting import WIDTH,HEIGHT
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,pos,target:Enemy):
+    def __init__(self,pos,target:Enemy,bounces,bounceRange):
         super().__init__()
         self.image = pygame.Surface((5,5),pygame.SRCALPHA)
         pygame.draw.circle(self.image,(255,255,0),(4,4),4)
@@ -18,6 +18,9 @@ class Bullet(pygame.sprite.Sprite):
         if distance == 0:
             distance = 1
         self.velocity = (dx/distance * self.speed, dy/distance * self.speed)
+        self.bounces = bounces
+        self.bounceRange = bounceRange
+        self.attackedTargets = []
     
     def calVelocity(self):
         dx = self.target.rect.center[0] - self.rect.center[0]
@@ -34,3 +37,27 @@ class Bullet(pygame.sprite.Sprite):
         if (self.rect.right < 0 or self.rect.left > WIDTH
             or self.rect.bottom < 0 or self.rect.top > HEIGHT):
             self.kill()
+            
+    def findNewTarget(self,enemies):
+        closest = None
+        min_distance = self.bounceRange
+        for enemy in enemies:
+            if enemy in self.attackedTargets or not enemy.alive():
+                continue
+            dx = enemy.rect.centerx - self.rect.centerx
+            dy = enemy.rect.centery - self.rect.centery
+            distance = math.hypot(dx, dy)
+            if distance < min_distance:
+                min_distance = distance
+                closest = enemy
+        return closest
+    
+    def bounce(self,enemies):
+        if self.bounces > 0:
+            self.attackedTargets.append(self.target)
+            self.target = self.findNewTarget(enemies)
+            if self.target:
+                self.bounces -= 1
+                self.calVelocity()
+                return True
+        return False

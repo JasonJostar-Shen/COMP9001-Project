@@ -2,12 +2,12 @@ import pygame
 from Utils.Setting import EFFECT_TYPE
 
 class Effect(pygame.sprite.Sprite):
-    def __init__(self,eType,pos,frame,text=None,fontsize=15,url=None):
+    def __init__(self,eType,pos,frame,text=None,fontsize=15,fontColor=(255,255,255),url=None):
         super().__init__()
         if url != None: self.image = pygame.image.load(url).convert_alpha()
         if text != None:
             self.font = pygame.font.SysFont("arial", fontsize)
-            self.image = self.font.render(text, True, (255, 255, 255))
+            self.image = self.font.render(text, True, fontColor)
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.eType = eType

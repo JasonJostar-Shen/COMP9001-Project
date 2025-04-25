@@ -21,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.kills = 0
         self.score = 0
         self.lv = 1
+        self.bounce = 0
         super().__init__()
         self.baseImg = pygame.image.load(PLAYER_BASE_URL).convert_alpha()
         self.turretImg = pygame.image.load(PLAYER_TURRET_URL).convert_alpha()
@@ -81,6 +82,8 @@ class Player(pygame.sprite.Sprite):
             self.hp += self.maxHp * value/100
             self.hp = self.hp if self.hp < self.maxHp else self.maxHp
             self.lifeBar.setValue(self.hp)
+        elif attribute == 'Bounce':
+            self.bounce += value
         
     
     def findTarget(self,group):
@@ -101,8 +104,6 @@ class Player(pygame.sprite.Sprite):
 
     def rotatoToTarget(self):
         if self.target is None:
-            # rotated_image = pygame.transform.rotate(self.originalTurret, 0)
-            # self.angle = 0
             return
 
         dx = self.target.rect.centerx - self.rect.centerx
@@ -110,23 +111,15 @@ class Player(pygame.sprite.Sprite):
         angle = math.degrees(math.atan2(-dy, dx))  # pygame y轴向下为正
 
         self.angle = angle - 90
-
-        # rotated_image = pygame.transform.rotate(self.originalTurret, angle)
-
-        # old_center = self.rect.center
-        # self.surface = rotated_image
-        # self.rect = self.surface.get_rect(center=old_center)
-
         
 
     def takenDamage(self,damage:int):
         self.hp -= damage
         self.lifeBar.setValue(self.hp)
-        # print(f"Hurt! Hp:{self.hp}")
     
     def shoot(self,bulletGroup):
         if self.target:
-            bullet = Bullet(self.rect.center,self.target)
+            bullet = Bullet(self.rect.center,self.target,self.bounce,self.range//2)
             bulletGroup.add(bullet)
     
     def hasTarget(self):
