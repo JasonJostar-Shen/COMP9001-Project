@@ -53,9 +53,9 @@ ENEMY_DICT = {
 ENEMY_SPWAN_WEIGHT = [0.8,0.2,0,0]
 
 
-ENEMY_COOLDOWN = 2000
+ENEMY_COOLDOWN = 2500
 ENEMY_COOLDOWN_MIN = 500
-ENEMY_MAX_NUM = 10
+ENEMY_MAX_NUM = 5
 
 
 PLAYER_INITHP = 2000
@@ -70,7 +70,7 @@ PLYAER_HP_SCORE = 2
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
 SOUND_FIRE_URL ="Assets/Sounds/fire.mp3"
 SOUND_HIT_ENEMY_URL = "Assets/Sounds/hit1.mp3"
-SOUND_HIT_PLYAER_URL = "Assets/Sounds/hit2.mp3"
+SOUND_HIT_PLAYER_URL = "Assets/Sounds/hit2.mp3"
 SOUND_LVUP_URL = "Assets/Sounds/lvup.mp3"
 SOUND_GAMEOVER_URL = "Assets/Sounds/gameover.mp3"
 

@@ -158,6 +158,7 @@ class Game:
                     elif event.key == pygame.K_c:
                         self.isOver = True
                         self.screenShot = self.screen.copy()
+                        self.SoundMananger.gameOver()
                         continue
                     # elif event.key == pygame.K_F5:
                     #     self.player.bounce += 1
@@ -239,8 +240,10 @@ class Game:
             if self.upgradeWin is not None: 
                     self.upgradeWin.draw()
             self.isOver = not self.player.isAlive()
-            if self.isOver: 
+            if self.isOver:
+                self.SoundMananger.gameOver() 
                 self.screenShot = self.screen.copy()
+                self.SoundMananger.gameOver()
                 
             pygame.display.flip()
 
