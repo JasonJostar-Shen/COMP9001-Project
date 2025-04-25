@@ -39,6 +39,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.isQuit = False
         self.isOver = False
+        self.isFinal = False
         self.restart()
 
     def restart(self):
@@ -96,6 +97,10 @@ class Game:
                     player.gainExp(enemy.exp,enemy.score)
                     if player.kills % 50 == 0:
                         generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
+                    if player.kills == 1000:
+                        self.isFinal = True
+                        for i in range(9):
+                            generateEnemy(enemies,player,config.ENEMY_DICT['CasaMonstro'])
                     generateEffect(effects,'FadeOut',enemy.rect.center,frame=30,url=enemy.url)
                     enemy.kill()
     
@@ -131,6 +136,14 @@ class Game:
     def quitGame(self):
         self.isQuit = True
     
+    def checkOver(self):
+        if not self.player.isAlive():
+            return True
+        if self.isFinal:
+            aliveEnemies = [enemy for enemy in self.enemySprites if enemy.alive()]
+            aliveCount = len(aliveEnemies)
+            if aliveCount == 0: return True
+        return False
     
     def run(self):
         while not self.isQuit:
@@ -204,14 +217,15 @@ class Game:
             
             
             if not self.isPause:
-                curEnemy = len(self.enemySprites)
-                enemyMax = GU.CalEnemyMax(self.player.kills)
-                enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
+                if not self.isFinal:
+                    curEnemy = len(self.enemySprites)
+                    enemyMax = GU.CalEnemyMax(self.player.kills)
+                    enemyCD = GU.CalEnemyCD(self.player.kills) // 2 if self.isFast else GU.CalEnemyCD(self.player.kills)
 
-                if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
-                    enemyConfig = GU.GenerateEnemyConfig()
-                    generateEnemy(self.enemySprites,self.player,enemyConfig)
-                    self.enemyRespondTime = self.curTime
+                    if curEnemy < enemyMax and (self.curTime - self.enemyRespondTime) >= enemyCD:
+                        enemyConfig = GU.GenerateEnemyConfig()
+                        generateEnemy(self.enemySprites,self.player,enemyConfig)
+                        self.enemyRespondTime = self.curTime
 
                 atkSpeed = self.player.atkSpeed // 2 if self.isFast else self.player.atkSpeed
                 if self.curTime - self.playerFireTime >= atkSpeed:
@@ -239,11 +253,10 @@ class Game:
             self.statusBar.update(self.screen,pygame.mouse.get_pos(),pygame.mouse.get_pressed()[0])
             if self.upgradeWin is not None: 
                     self.upgradeWin.draw()
-            self.isOver = not self.player.isAlive()
+            self.isOver = self.checkOver()
             if self.isOver:
                 self.SoundMananger.gameOver() 
                 self.screenShot = self.screen.copy()
-                self.SoundMananger.gameOver()
                 
             pygame.display.flip()
 

@@ -7,13 +7,13 @@ STATUSWIDTH = 100
 ENEMY_DICT = {
     'EyeLander':{
     'hp':100,
-    'speed':0.75,
+    'speed':0.5,
     'expParam':0.5,
     'url':'Assets/Images/EyeLander.png',
     'hpInterval':5,
     'hpIncrement':25,
     'speedInterval':100,
-    'speedIncrement':0.5,
+    'speedIncrement':0.25,
     'score':50
     },
     'Claw':{
@@ -24,7 +24,7 @@ ENEMY_DICT = {
     'hpInterval':10,
     'hpIncrement':25,
     'speedInterval':100,
-    'speedIncrement':1,
+    'speedIncrement':0.5,
     'score':100
     },
     'CasaMonstro':{
@@ -68,14 +68,16 @@ PLAYER_TURRET_URL = 'Assets/Images/turret.png'
 PLYAER_HP_SCORE = 2
 
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
-SOUND_FIRE_URL ="Assets/Sounds/fire.mp3"
+SOUND_FIRE_URL ="Assets/Sounds/fireOption.mp3"
 SOUND_HIT_ENEMY_URL = "Assets/Sounds/hit1.mp3"
 SOUND_HIT_PLAYER_URL = "Assets/Sounds/hit2.mp3"
 SOUND_LVUP_URL = "Assets/Sounds/lvup.mp3"
 SOUND_GAMEOVER_URL = "Assets/Sounds/gameover.mp3"
+SOUND_WARNING_URL = "Assets/Sounds/warning.mp3"
+SOUND_FINAL_URL = "Assets/Sounds/finalBattle.mp3"
 
 WALL_URL = "Assets/Images/wall.png"
-UPGRADE_DICT = {'ATK':[10,20,50,100],'Range':[50,75,100,200],'AS':[10,15,20,50],'HP':[25,50,75,100],'Bounce':1}
+UPGRADE_DICT = {'ATK':[20,35,50,100],'Range':[50,75,100,200],'AS':[10,15,20,50],'HP':[25,50,75,100],'Bounce':1}
 UPGRADE_WEIGHT_KEY = [0.4,0.1,0.4,0.08,0.02]
 UPGRADE_WEIGHT_VALUE = [0.6,0.33,0.05,0.02]
 
