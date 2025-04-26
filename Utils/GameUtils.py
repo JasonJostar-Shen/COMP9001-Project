@@ -2,21 +2,23 @@ import Utils.Setting as config
 import random
 
 def CalLVGap(curLV):
-    gapLv = (curLV - 1) // config.PLAYER_LV_GAP_INTERVAL
+    interval = config.PLAYER_LV_GAP_INTERVAL
+    gapLv = (curLV-1)//interval
     if gapLv == 0: return curLV * config.PLAYER_LV_GAP[0]
-    gapLv = gapLv if gapLv < 4 else 4
+    gapLv = gapLv if gapLv < len(config.PLAYER_LV_GAP) else len(config.PLAYER_LV_GAP) - 1
     lastExpGap = 0
     for i in range(gapLv):
         if gapLv > i:
-            lastExpGap += config.PLAYER_LV_GAP[i] * 3
-    lastExpGap += config.PLAYER_LV_GAP[i] * (curLV - gapLv*3)
+            lastExpGap += config.PLAYER_LV_GAP[i] * interval
+    lastExpGap += config.PLAYER_LV_GAP[gapLv] * (curLV - gapLv * interval)
     return lastExpGap
 
-def CalEnemyExp(initHP,expParam):
-    return int(initHP*expParam)
+def CalEnemyExp(score,expParam):
+    return score * expParam
 
 def CalEnemyHP(curKills,hp,interval,increment):
-    return hp  * ((1 + (increment / 100)) **(curKills // interval))
+    hp = hp  * ((1 + (increment / 100)) **(curKills // interval))
+    return int(hp)
 
 def CalEnemySpeed(curKills,speed,interval,increment):
     return speed + curKills // interval * increment
@@ -59,6 +61,6 @@ def GetOptionText(option):
     if attribute == 'HP' or attribute == 'ATK':
         return f'{attribute} +{value}%'
     
-def CalPlayerHp(curLv):
-    return config.PLAYER_INITHP * (1+config.PLAYER_HP_INTERVAL/100) ** ((curLv - 1) // config.PLAYER_HP_INTERVAL)
+# def CalPlayerHp(curLv):
+#     return int(config.PLAYER_INITHP * (1+config.PLAYER_HP_INCREMENT/100) ** ((curLv - 1) // config.PLAYER_HP_INTERVAL))
     

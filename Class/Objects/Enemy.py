@@ -8,7 +8,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self,hp,speed,url,score,expParam):
         self.hp = hp
         self.speed = speed
-        self.exp = GU.CalEnemyExp(self.hp,expParam)
+        self.exp = GU.CalEnemyExp(score,expParam)
         self.score = score
         self.url = url
         super().__init__()

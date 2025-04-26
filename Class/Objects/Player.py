@@ -68,11 +68,11 @@ class Player(pygame.sprite.Sprite):
     def lvUp(self,option):
         self.exp -= GU.CalLVGap(self.lv)
         self.lv += 1
-        maxHp = GU.CalPlayerHp(self.lv)
-        self.hp += (maxHp - self.maxHp)
-        self.maxHp = maxHp
-        self.lifeBar.maxValue = self.maxHp
-        self.lifeBar.setValue(self.hp)
+        # maxHp = GU.CalPlayerHp(self.lv)
+        # self.hp += (maxHp - self.maxHp)
+        # self.maxHp = maxHp
+        # self.lifeBar.maxValue = self.maxHp
+        # self.lifeBar.setValue(self.hp)
         self.expBar.maxValue = self.getLvGap()
         self.expBar.resetValue(self.exp)
         attribute = option[0]
@@ -120,7 +120,7 @@ class Player(pygame.sprite.Sprite):
         
 
     def takenDamage(self,damage:int):
-        self.hp -= damage
+        self.hp -= int(damage)
         self.lifeBar.setValue(self.hp)
     
     def shoot(self,bulletGroup,soundManager):

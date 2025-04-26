@@ -8,6 +8,7 @@ from Class.Components.UpgradeWindow import UpgradeWindow
 from Class.SoundManager import SoundManager
 import Utils.GameUtils as GU
 import Utils.Setting as config
+import pygame.docs
 
 
 
@@ -20,7 +21,7 @@ def initWindow():
 
 def generateEnemy(sprites:pygame.sprite.LayeredUpdates,player:Player,enemyConfig):
     hp = GU.CalEnemyHP(player.kills,enemyConfig['hp'],enemyConfig['hpInterval'],enemyConfig['hpIncrement'])
-    speed = GU.CalEnemyHP(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
+    speed = GU.CalEnemySpeed(player.kills,enemyConfig['speed'],enemyConfig['speedInterval'],enemyConfig['speedIncrement'])
     enemy = Enemy(hp,speed,enemyConfig['url'],enemyConfig['score'],enemyConfig['expParam'])
     sprites.add(enemy,layer = 0)
     
@@ -75,7 +76,7 @@ class Game:
         EnenmyHitWall = pygame.sprite.spritecollide(wall,enemies, dokill=True)
         if EnenmyHitWall:
             for enemy in EnenmyHitWall:
-                player.takenDamage(enemy.hp)
+                player.takenDamage(enemy.exp)
                 self.SoundMananger.hitPlayer()
                 generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
         
@@ -176,10 +177,13 @@ class Game:
                         self.SoundMananger.gameOver()
                         continue
                     elif event.key == pygame.K_F5:
-                        self.player.bounce += 2
-                        self.player.range = 1000
-                        self.player.atk += 999999
-                        self.player.atkSpeed = 100
+                        print(self.screen.get_size())
+                        print()
+                        print(pygame.display.Info())
+                        # self.player.bounce += 2
+                        # self.player.range = 1000
+                        # self.player.atk += 999999
+                        # self.player.atkSpeed = 100
                     # elif event.key == pygame.K_F6:
                     #     generateEnemy(self.enemySprites,self.player,config.ENEMY_DICT['test'])
 
