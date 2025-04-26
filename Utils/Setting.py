@@ -10,7 +10,7 @@ ENEMY_DICT = {
     'speed':0.5,
     'expParam':1,
     'url':'Assets/Images/EyeLander.png',
-    'hpInterval':20,
+    'hpInterval':10,
     'hpIncrement':20,
     'speedInterval':250,
     'speedIncrement':0.25,
@@ -21,7 +21,7 @@ ENEMY_DICT = {
     'speed':1,
     'expParam':1,
     'url':'Assets/Images/Claw.png',
-    'hpInterval':20,
+    'hpInterval':10,
     'hpIncrement':20,
     'speedInterval':250,
     'speedIncrement':0.25,
@@ -61,7 +61,7 @@ ENEMY_MAX_NUM = 5
 PLAYER_INITHP = 2500
 PLAYER_AS = 2000
 PLAYER_DAMAGE = 50
-PLAYER_LV_GAP = [50,100,150,200,250,300,1000]
+PLAYER_LV_GAP = [100,150,200,250,300,350,1000]
 PLAYER_LV_GAP_INTERVAL = 15
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
@@ -79,7 +79,7 @@ SOUND_WARNING_URL = "Assets/Sounds/warning.mp3"
 SOUND_FINAL_URL = "Assets/Sounds/finalBattle.mp3"
 
 WALL_URL = "Assets/Images/wall.png"
-UPGRADE_DICT = {'ATK':[30,50,75,200],'Range':[50,75,100,200],'AS':[10,15,30,50],'HP':[25,50,75,100],'Bounce':1}
+UPGRADE_DICT = {'ATK':[20,50,75,200],'Range':[50,75,100,200],'AS':[10,15,30,50],'HP':[25,50,75,100],'Bounce':1}
 UPGRADE_WEIGHT_KEY = [0.4,0.1,0.4,0.08,0.02]
 UPGRADE_WEIGHT_VALUE = [0.6,0.33,0.05,0.02]
 
