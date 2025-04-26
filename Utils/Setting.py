@@ -10,7 +10,7 @@ ENEMY_DICT = {
     'speed':0.5,
     'expParam':1,
     'url':'Assets/Images/EyeLander.png',
-    'hpInterval':10,
+    'hpInterval':15,
     'hpIncrement':20,
     'speedInterval':250,
     'speedIncrement':0.25,
@@ -21,14 +21,14 @@ ENEMY_DICT = {
     'speed':1,
     'expParam':1,
     'url':'Assets/Images/Claw.png',
-    'hpInterval':10,
+    'hpInterval':15,
     'hpIncrement':20,
     'speedInterval':250,
     'speedIncrement':0.25,
     'score':100
     },
     'CasaMonstro':{
-        'hp':1000,
+        'hp':2000,
         'speed':0.2,
         'expParam':1,
         'url':'Assets/Images/CasaMonstro.png',
@@ -61,7 +61,7 @@ ENEMY_MAX_NUM = 5
 PLAYER_INITHP = 2500
 PLAYER_AS = 2000
 PLAYER_DAMAGE = 50
-PLAYER_LV_GAP = [100,150,200,250,300,350,1000]
+PLAYER_LV_GAP = [100,100,150,200,300,350,1000]
 PLAYER_LV_GAP_INTERVAL = 15
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
