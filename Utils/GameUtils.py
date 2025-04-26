@@ -24,7 +24,7 @@ def CalEnemySpeed(curKills,speed,interval,increment):
     return speed + curKills // interval * increment
 
 def CalEnemyCD(curKills):
-    cd = config.ENEMY_COOLDOWN - curKills//10 * 100
+    cd = config.ENEMY_COOLDOWN - curKills//20 * 200
     cd =  cd if cd > config.ENEMY_COOLDOWN_MIN else config.ENEMY_COOLDOWN_MIN
     return cd
     
