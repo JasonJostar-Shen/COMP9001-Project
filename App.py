@@ -8,7 +8,6 @@ from Class.Components.UpgradeWindow import UpgradeWindow
 from Class.SoundManager import SoundManager
 import Utils.GameUtils as GU
 import Utils.Setting as config
-import pygame.docs
 
 
 
