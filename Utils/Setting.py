@@ -1,7 +1,7 @@
 BG_URL = "Assets/Images/bg.jpg"
 
 FPS = 60
-WIDTH, HEIGHT = 600, 800
+WIDTH, HEIGHT = 600, 750
 STATUSWIDTH = 100
 
 ENEMY_DICT = {
