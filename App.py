@@ -33,6 +33,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT))
+        # self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT), pygame.SCALED | pygame.FULLSCREEN)
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
         self.clock = pygame.time.Clock()
