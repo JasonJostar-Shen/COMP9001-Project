@@ -32,7 +32,7 @@ def generateEffect(group:pygame.sprite.LayeredUpdates,type,pos,frame,text=None,f
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT))
+        self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT),pygame.SCALED)
         # self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT), pygame.SCALED | pygame.FULLSCREEN)
         pygame.display.set_caption("DefendSpace")
         self.bg = initWindow()
@@ -40,6 +40,7 @@ class Game:
         self.isQuit = False
         self.isOver = False
         self.isFinal = False
+        self.isFullScreen = False
         self.restart()
 
     def restart(self):
@@ -186,6 +187,12 @@ class Game:
                         # self.player.atkSpeed = 100
                     # elif event.key == pygame.K_F6:
                     #     generateEnemy(self.enemySprites,self.player,config.ENEMY_DICT['test'])
+                    # elif event.key == pygame.K_F11:
+                    #     self.isFullScreen = not self.isFullScreen
+                    #     if self.isFullScreen:
+                    #         self.screen = pygame.display.set_mode((config.WIDTH + config.STATUSWIDTH, config.HEIGHT), pygame.SCALED | pygame.FULLSCREEN)
+                    #     else:
+                    #         self.screen.set
 
                 if self.upgradeWin is not None:
                     result = self.upgradeWin.handleEvent(event)
