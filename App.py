@@ -79,7 +79,7 @@ class Game:
             for enemy in EnenmyHitWall:
                 player.takenDamage(enemy.exp)
                 self.SoundMananger.hitPlayer()
-                generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.hp}',fontSize=20,fontColor=(200,100,100))
+                generateEffect(effects,'UpFadeOut', player.rect.midtop,30,text=f'-{enemy.exp}',fontSize=20,fontColor=(200,100,100))
         
         for enemy in enemies:
             bulletHitEnenmy = pygame.sprite.spritecollide(enemy,bullets, dokill=False)
