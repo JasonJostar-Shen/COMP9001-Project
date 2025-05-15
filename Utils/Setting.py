@@ -66,8 +66,7 @@ PLAYER_LV_GAP_INTERVAL = 15
 PLAYER_BASE_URL = 'Assets/Images/base.png'
 PLAYER_TURRET_URL = 'Assets/Images/turret.png'
 PLAYER_HP_SCORE = 2
-# PLAYER_HP_INCREMENT = 40
-# PLAYER_HP_INTERVAL = 5
+
 
 SOUND_BGM_URL = "Assets/Sounds/background.mp3"
 SOUND_FIRE_URL ="Assets/Sounds/fire.mp3"
