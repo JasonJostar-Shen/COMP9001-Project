@@ -6,7 +6,7 @@ class Effect(pygame.sprite.Sprite):
         super().__init__()
         if url != None: self.image = pygame.image.load(url).convert_alpha()
         if text != None:
-            self.font = pygame.font.SysFont("arial", fontsize)
+            self.font = pygame.font.Font(None, fontsize)
             self.image = self.font.render(text, True, fontColor)
         self.rect = self.image.get_rect()
         self.rect.center = pos

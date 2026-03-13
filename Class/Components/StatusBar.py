@@ -9,7 +9,7 @@ class StatusBar:
         self.player = player
         self.width = STATUSWIDTH
         self.color = (80, 80, 80) 
-        self.font = pygame.font.SysFont(None, 20)
+        self.font = pygame.font.Font(None, 20)
         self.fontColor = (42, 191, 206)
         self.surface = pygame.Surface((self.width, HEIGHT), pygame.SRCALPHA)
         # self.surface.set_alpha(255)

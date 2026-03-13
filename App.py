@@ -112,10 +112,10 @@ class Game:
         overlay = pygame.Surface(self.screen.get_size(),pygame.SRCALPHA)
         overlay.fill((0,0,0))
         overlay.set_alpha(180)
-        font = pygame.font.SysFont('arial',48)
+        font = pygame.font.Font('arial',48)
         title = font.render("GAME OVER!",True,(255,255,255))
         titleRect = title.get_rect()
-        font = pygame.font.SysFont('arial',32)
+        font = pygame.font.Font('arial',32)
         score = self.player.score if self.player.hp <= 0 else self.player.score + self.player.hp * config.PLAYER_HP_SCORE
         texts = [font.render(f"Your Score is {score}",True,(255,255,255)),
                  font.render("Press'R' to Restart!",True,(255,255,255))]

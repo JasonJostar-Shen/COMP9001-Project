@@ -11,8 +11,8 @@ class UpgradeWindow:
         self.selected = -1
         self.overlay.fill((0,0,0))
         self.overlay.set_alpha(180)
-        self.titleFont = pygame.font.SysFont('arial',48)
-        self.optionFont = pygame.font.SysFont('arial',20)
+        self.titleFont = pygame.font.Font(None,48)
+        self.optionFont = pygame.font.Font(None,20)
         self.buttons = list[Button]
         self.options = options
         self.reroll = 3

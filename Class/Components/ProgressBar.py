@@ -11,7 +11,7 @@ class ProgressBar:
         self.isText = title != None
         if self.isText:
             self.title = title
-            self.font = pygame.font.SysFont('arial',self.height)
+            self.font = pygame.font.Font(None,48)
         self.fillColor = fillColor
         self.bgColor = bgColor
         self.outlineColor = outlineColor
